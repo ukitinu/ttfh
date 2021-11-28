@@ -135,9 +135,9 @@ class Window:
         self.__tick()
 
     def __draw_buttons(self) -> None:
-        self.slow_btn = Switch(self.window, 'hourglass', self.__click_slow_btn).pack(side='left', padx=30, pady=10)
-        self.pause_btn = Switch(self.window, 'gray12', self.__click_pause_btn).pack(side='left', padx=64, pady=10)
-        Button(self.window, 'gray75', cmd=self.__click_reset_btn).pack(side='right', padx=30, pady=10)
+        self.slow_btn = Switch(self.window, 'resources/images/slow.png', self.__click_slow_btn).pack(side='left', padx=30, pady=10)
+        self.pause_btn = Switch(self.window, 'resources/images/run.png', self.__click_pause_btn).pack(side='left', padx=64, pady=10)
+        Button(self.window, 'resources/images/reset.png', cmd=self.__click_reset_btn).pack(side='right', padx=30, pady=10)
 
     def show(self) -> None:
         self.window.geometry(f'{self.__WIDTH}x{self.__HEIGHT}+{self.__POS_X}+{self.__POS_Y}')
