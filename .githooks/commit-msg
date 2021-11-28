@@ -1,0 +1,14 @@
+#!/bin/bash
+
+MIN_LENGTH=10
+
+msg=$(cat "$1")
+msg="${msg##+([[:space:]])}"
+msg="${msg%%+([[:space:]])}"
+msg=$(echo "$msg" | tr --squeeze ' ')
+
+if [[ "${#msg}" -lt "$MIN_LENGTH" ]]; then
+  printf "Commit message must be longer than %d characters (current: \"%s\")." "$MIN_LENGTH" "$msg"
+  exit 1
+fi
+echo "$msg" >"$1"

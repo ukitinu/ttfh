@@ -1,0 +1,4 @@
+#!/bin/bash
+
+#automated PyLint
+py C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python38\\Scripts\\git-pylint-commit-hook --ignore=tests_.*?py
