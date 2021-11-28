@@ -1,0 +1,40 @@
+[SYSTEM]
+python3=python
+entrypoint=entrypoint.py
+run-sh=run.sh
+run-vbs=run.vbs
+
+[LABELS]
+day-0-name=UN NUOVO GIORNO
+day-0-colour=white
+day-1-name=PRIMO GIORNO
+day-1-colour=#b79649
+day-2-name=SECONDO GIORNO
+day-2-colour=#ed8210
+day-3-name=ULTIMO GIORNO
+day-3-colour=#d1670a
+
+dawn-name=alba
+dawn-colour=yellow
+morning-name=mattina
+morning-colour=orange
+afternoon-name=pomeriggio
+afternoon-colour=green
+twilight-name=tramonto
+twilight-colour=purple
+night-name=notte
+night-colour=blue
+
+[TIMER]
+; milliseconds
+interval-short=2000
+interval-long=3000
+; comma-separated values
+bell-hours=6,18
+rumble-hours=11,14,17,20,22,0,2,3,4
+
+[SOUNDS]
+bells=resources/sounds/bells.mp3
+tick=resources/sounds/tick.mp3
+rumble=resources/sounds/rumble.mp3
+transition=resources/sounds/transition.mp3

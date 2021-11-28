@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+CONT_FILE="continue"
+PYTHON_CMD="python"
+ENTRYPOINT="entrypoint.py"
+
+if [[ -f "$CONT_FILE" ]]; then
+  bash "$CONT_FILE"
+else
+  echo "${PYTHON_CMD} ${ENTRYPOINT}"
+fi
