@@ -19,7 +19,7 @@ class Timer:
         self.minute = minute
         self.running = False
         self.end = False
-        self.fast = 0
+        self.slow = 0
 
     def update_time(self) -> None:
         if self.end:
@@ -61,17 +61,33 @@ class Timer:
         self.minute = minute
 
     def un_pause(self) -> None:
+        """ If it's not the end, it switches the running state of the timer. """
         if not self.end:
             self.running = not self.running
 
     def cycle_millis(self) -> None:
-        self.fast = 1 - self.fast
+        self.slow = 1 - self.slow
 
     def get_interval(self) -> int:
-        return self.__INTERVALS[self.fast]
+        return self.__INTERVALS[self.slow]
 
     def reset(self) -> None:
+        """ Resets the timer to its starting value, at non-running state and non-slow speed """
         self.__set_time(self.START_DAY, self.START_HOUR, self.START_MINUTE)
         self.running = False
         self.end = False
+        self.slow = 0
         music.stop()
+
+    def forward(self) -> None:
+        """
+        If it's not the end and it's not the last hour, it stops the timer, un-slows it
+        and moves the clock one hour forward
+        """
+        if not (self.hour == self.START_HOUR - 1 and self.day == self.__DAY_MAX) and not self.end:
+            new_hour = (self.hour + 1) % 24
+            new_day = self.day + 1 if new_hour == self.START_HOUR else self.day
+            self.__set_time(new_day, new_hour, self.START_MINUTE)
+            self.running = False
+            self.slow = 0
+            music.stop()
