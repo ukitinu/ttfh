@@ -54,10 +54,11 @@ class Window:
         self.time.set(timedata.get_time(self.timer))
 
     @staticmethod
-    def __draw_circle(canvas: tk.Canvas, x: int, y: int, r: int, **kwargs):
+    def __draw_circle(canvas: tk.Canvas, x_coord: int, y_coord: int, ray: int, **kwargs):
         if "extent" in kwargs:
-            return canvas.create_arc(x - r, y - r, x + r, y + r, fill=None, start=90, style=tk.ARC, **kwargs)
-        return canvas.create_oval(x - r, y - r, x + r, y + r, fill=None, **kwargs)
+            return canvas.create_arc(x_coord - ray, y_coord - ray, x_coord + ray, y_coord + ray,
+                                     fill=None, start=90, style=tk.ARC, **kwargs)
+        return canvas.create_oval(x_coord - ray, y_coord - ray, x_coord + ray, y_coord + ray, fill=None, **kwargs)
 
     def __calc_arc_extent(self, minutes: int) -> int:
         extent = -1 * minutes * 6
