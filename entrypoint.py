@@ -4,7 +4,7 @@ import argparse
 import sys
 
 from src.timer import Timer
-from src.window import Window
+from src.graphics.window import Window
 
 
 def main(day: int, hour: int, minute: int):

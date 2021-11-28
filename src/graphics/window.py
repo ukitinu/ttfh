@@ -6,7 +6,7 @@ from typing import Callable
 
 from src import ini
 from src import timedata
-from src.switchstyle import SwitchStyle
+from src.graphics.switchstyle import SwitchStyle
 from src.timer import Timer
 
 
