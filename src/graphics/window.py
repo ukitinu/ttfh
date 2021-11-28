@@ -32,6 +32,7 @@ class Window:
         self.time = tk.StringVar(self.window, timedata.get_time(self.timer))
         self.slow_btn: Switch = None
         self.pause_btn: Switch = None
+        self.reset_btn: Button = None
 
     def __on_delete(self) -> None:
         self.window.destroy()
@@ -121,23 +122,23 @@ class Window:
 
         self.time.trace_add('write', on_change)
 
-    def __click_slow_btn(self) -> None:
+    def __slow(self) -> None:
         self.timer.cycle_millis()
         self.slow_btn.set_on(self.timer.fast)
 
-    def __click_pause_btn(self) -> None:
+    def __pause(self) -> None:
         self.timer.un_pause()
         self.pause_btn.set_on(self.timer.running)
 
-    def __click_reset_btn(self) -> None:
+    def __reset(self) -> None:
         self.timer.reset()
         self.pause_btn.set_on(self.timer.running)
         self.__tick()
 
     def __draw_buttons(self) -> None:
-        self.slow_btn = Switch(self.window, 'resources/images/slow.png', self.__click_slow_btn).pack(side='left', padx=30, pady=10)
-        self.pause_btn = Switch(self.window, 'resources/images/run.png', self.__click_pause_btn).pack(side='left', padx=64, pady=10)
-        Button(self.window, 'resources/images/reset.png', cmd=self.__click_reset_btn).pack(side='right', padx=30, pady=10)
+        self.slow_btn = Switch(self.window, ini.get_img('slow'), self.__slow).pack(side='left', padx=30, pady=10)
+        self.pause_btn = Switch(self.window, ini.get_img('run'), self.__pause).pack(side='left', padx=64, pady=10)
+        self.reset_btn = Button(self.window, ini.get_img('reset'), self.__reset).pack(side='right', padx=30, pady=10)
 
     def show(self) -> None:
         self.window.geometry(f'{self.__WIDTH}x{self.__HEIGHT}+{self.__POS_X}+{self.__POS_Y}')

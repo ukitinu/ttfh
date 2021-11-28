@@ -7,9 +7,6 @@ __pycache__/
 /resources/sounds/*
 !/resources/sounds/.gitkeep
 
-# temporary
-resources/images/reset.png
-
 continue
 continue-backup
 countdown.ini

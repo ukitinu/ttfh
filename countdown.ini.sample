@@ -38,3 +38,8 @@ bells=resources/sounds/bells.mp3
 tick=resources/sounds/tick.mp3
 rumble=resources/sounds/rumble.mp3
 transition=resources/sounds/transition.mp3
+
+[IMAGES]
+slow=resources/images/slow.png
+run=resources/images/run.png
+reset=resources/images/reset.png
