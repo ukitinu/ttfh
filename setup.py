@@ -12,24 +12,26 @@ def __setup_script(file_key: str, file_data: SetupData) -> None:
 
     file = ini.get_sys(file_key)
     newlines = []
-    with open(file, 'r', encoding='utf-8') as f:
-        for line in f.readlines():
+    with open(file, 'r', encoding='utf-8') as script:
+        for line in script.readlines():
             if line.startswith(file_data.py_start):
                 newlines.append(file_data.get_py_line(py_cmd))
             elif line.startswith(file_data.entry_start):
                 newlines.append(file_data.get_entry_line(entry))
             else:
                 newlines.append(line)
-    with open(file, 'w', encoding='utf-8') as f:
+    with open(file, 'w', encoding='utf-8') as script:
         for line in newlines:
-            f.write(line)
+            script.write(line)
 
 
 def setup_sh() -> None:
+    """ Updates the run.sh file with the settings from the .ini file. """
     __setup_script('run-sh', SH_DATA)
 
 
 def setup_vbs() -> None:
+    """ Updates the run.vbs file with the settings from the .ini file. """
     __setup_script('run-vbs', VBS_DATA)
 
 
