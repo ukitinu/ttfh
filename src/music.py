@@ -34,4 +34,7 @@ def stop():
 
 
 def __play(key: str, channel: int):
-    mixer.Channel(channel).play(mixer.Sound(ini.get_sound(key)))
+    try:
+        mixer.Channel(channel).play(mixer.Sound(ini.get_sound(key)))
+    except FileNotFoundError:
+        pass
