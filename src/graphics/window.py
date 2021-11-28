@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import sys
 import tkinter as tk
-from typing import Callable
 
 from src import ini
 from src import timedata
-from src.graphics.switchstyle import SwitchStyle
+from src.graphics.button import Button
+from src.graphics.switch import Switch
 from src.timer import Timer
 
 
@@ -30,8 +30,8 @@ class Window:
         self.day = tk.StringVar(self.window, timedata.get_day(self.timer))
         self.period = tk.StringVar(self.window, timedata.get_period(self.timer))
         self.time = tk.StringVar(self.window, timedata.get_time(self.timer))
-        self.slow_style = SwitchStyle(self.window)
-        self.pause_style = SwitchStyle(self.window)
+        self.slow_btn: Switch = None
+        self.pause_btn: Switch = None
 
     def __on_delete(self) -> None:
         self.window.destroy()
@@ -123,35 +123,21 @@ class Window:
 
     def __click_slow_btn(self) -> None:
         self.timer.cycle_millis()
-        self.slow_style.switch(self.timer.fast)
+        self.slow_btn.set_on(self.timer.fast)
 
     def __click_pause_btn(self) -> None:
         self.timer.un_pause()
-        self.pause_style.switch(self.timer.running)
+        self.pause_btn.set_on(self.timer.running)
 
     def __click_reset_btn(self) -> None:
         self.timer.reset()
-        self.pause_style.switch(self.timer.running)
+        self.pause_btn.set_on(self.timer.running)
         self.__tick()
 
     def __draw_buttons(self) -> None:
-        self.__draw_switch('hourglass', self.slow_style, self.__click_slow_btn, 30)
-        self.__draw_switch('gray12', self.pause_style, self.__click_pause_btn, 64)
-        reset_btn = tk.Button(self.window, bitmap='gray75', command=self.__click_reset_btn)
-        reset_btn.pack(side='right', padx=30, pady=10)
-
-    def __draw_switch(self, bitmap: str, btn_style: SwitchStyle, command: Callable, pad_x: int):
-        btn = tk.Button(self.window, bitmap=bitmap, command=command,
-                        bg=btn_style.get().split(":")[1],
-                        relief=btn_style.get().split(":")[0])
-        btn.pack(side='left', padx=pad_x, pady=10)
-
-        def on_change(varname, index, mode):
-            relief = self.window.getvar(varname).split(":")[0]
-            bg = self.window.getvar(varname).split(":")[1]
-            btn.configure(relief=relief, bg=bg)
-
-        btn_style.trace_add(on_change)
+        self.slow_btn = Switch(self.window, 'hourglass', self.__click_slow_btn).pack(side='left', padx=30, pady=10)
+        self.pause_btn = Switch(self.window, 'gray12', self.__click_pause_btn).pack(side='left', padx=64, pady=10)
+        Button(self.window, 'gray75', cmd=self.__click_reset_btn).pack(side='right', padx=30, pady=10)
 
     def show(self) -> None:
         self.window.geometry(f'{self.__WIDTH}x{self.__HEIGHT}+{self.__POS_X}+{self.__POS_Y}')
