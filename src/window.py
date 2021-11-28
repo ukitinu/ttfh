@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import tkinter as tk
 from typing import Callable
 
@@ -35,7 +36,7 @@ class Window:
     def __on_delete(self) -> None:
         self.window.destroy()
         self.__make_continue()
-        exit(0)
+        sys.exit(0)
 
     def __make_continue(self) -> None:
         save_time = f'--day {self.timer.day} --hour {self.timer.hour} --minute {self.timer.minute}'
@@ -51,17 +52,15 @@ class Window:
     def __draw_circle(canvas: tk.Canvas, x: int, y: int, r: int, **kwargs):
         if "extent" in kwargs:
             return canvas.create_arc(x - r, y - r, x + r, y + r, fill=None, start=90, style=tk.ARC, **kwargs)
-        else:
-            return canvas.create_oval(x - r, y - r, x + r, y + r, fill=None, **kwargs)
+        return canvas.create_oval(x - r, y - r, x + r, y + r, fill=None, **kwargs)
 
     def __calc_arc_extent(self, minutes: int) -> int:
         extent = -1 * minutes * 6
         if minutes == 0 and self.timer.hour == 5 and self.timer.day == 1:
             return 0
-        elif minutes == 0:
+        if minutes == 0:
             return -359
-        else:
-            return extent
+        return extent
 
     def __draw_day_canvas(self) -> None:
         day_canvas = tk.Canvas(self.window, width=self.__WIDTH, height=self.__DAY_HEIGHT, bg=self.__BG_COLOUR,

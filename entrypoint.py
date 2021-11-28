@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 
 from src.timer import Timer
 from src.window import Window
@@ -23,4 +24,4 @@ if __name__ == '__main__':
         main(args.day, args.hour, args.minute)
     else:
         print('Starting time out of bounds')
-        exit(1)
+        sys.exit(1)

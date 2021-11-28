@@ -24,8 +24,7 @@ PERIODS.update(dict.fromkeys([21, 22, 23, 0, 1, 2, 3], __get_label('night')))
 def get_day(timer: Timer) -> str:
     if 1 <= timer.day <= 3:
         return DAYS[timer.day]
-    else:
-        return DAYS[0]
+    return DAYS[0]
 
 
 def get_period(timer: Timer) -> str:
