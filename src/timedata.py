@@ -10,8 +10,7 @@ def __get_label(label: str) -> str:
     return name + ':' + colour
 
 
-DAYS: List[str] = [__get_label('day-0'), __get_label('day-1'), __get_label('day-2'), __get_label('day-3')
-                   ]
+DAYS: List[str] = [__get_label('day-0'), __get_label('day-1'), __get_label('day-2'), __get_label('day-3')]
 
 PERIODS: Dict[int, str] = {}
 PERIODS.update(dict.fromkeys([4, 5, 6], __get_label('dawn')))

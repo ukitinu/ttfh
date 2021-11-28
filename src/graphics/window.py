@@ -36,6 +36,9 @@ class Window:
         self.forward_btn: Button = None
 
     def __on_delete(self) -> None:
+        """
+        Creates the 'continue' file when the window is closed.
+        """
         self.window.destroy()
         self.__make_continue()
         sys.exit(0)
@@ -150,6 +153,9 @@ class Window:
         self.reset_btn = Button(self.window, ini.get_img('reset'), self.__reset).pack(side='right', padx=16, pady=10)
 
     def show(self) -> None:
+        """
+        Draws, displays and updates the main window of the programme.
+        """
         self.window.geometry(f'{self.__WIDTH}x{self.__HEIGHT}+{self.__POS_X}+{self.__POS_Y}')
         self.window.config(bg=self.__BG_COLOUR)
         self.window.resizable(False, False)
