@@ -6,7 +6,7 @@ class Timer:
     START_DAY = 1
     START_HOUR = 5
     START_MINUTE = 0
-    __INTERVALS = [int(ini.get_timer('interval-short')), int(ini.get_timer('interval-long'))]  # [2000, 3000]
+    __INTERVALS = [int(ini.get_timer('interval-short')), int(ini.get_timer('interval-long'))]
     __BELL_HOURS = tuple(int(h) for h in ini.get_timer('bell-hours').split(','))
     __RUMBLE_HOURS = tuple(int(h) for h in ini.get_timer('rumble-hours').split(','))
 
