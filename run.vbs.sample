@@ -6,12 +6,11 @@ Set oShell = CreateObject("Wscript.Shell")
 Dim strArgs, continue, file, command, pythonCmd, entrypoint
 pythonCmd = "python"
 entrypoint = "entrypoint.py"
-
 continueFile = fso.GetAbsolutePathName(".") & "/continue"
 
 If fso.FileExists(continueFile) Then
     Set file = fso.OpenTextFile(continueFile, 1)
-    command = file.ReadAll
+    command = pythonCmd & " " & file.ReadAll
 Else
     command = pythonCmd & " " & entrypoint
 End If

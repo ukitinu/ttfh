@@ -38,10 +38,9 @@ class Window:
         exit(0)
 
     def __make_continue(self) -> None:
-        cmd = f'{ini.get_sys("python3")} {ini.get_sys("entrypoint")}'
         save_time = f'--day {self.timer.day} --hour {self.timer.hour} --minute {self.timer.minute}'
         with open('continue', 'w', encoding='utf-8') as batch_file:
-            batch_file.write(f'{cmd} {save_time}\n')
+            batch_file.write(f'{ini.get_sys("entrypoint")} {save_time}\n')
 
     def __tick(self):
         self.day.set(timedata.get_day(self.timer))

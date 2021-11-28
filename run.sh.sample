@@ -5,7 +5,7 @@ PYTHON_CMD="python"
 ENTRYPOINT="entrypoint.py"
 
 if [[ -f "$CONT_FILE" ]]; then
-  bash "$CONT_FILE"
+  bash "${PYTHON_CMD} ${CONT_FILE}"
 else
-  echo "${PYTHON_CMD} ${ENTRYPOINT}"
+  bash "${PYTHON_CMD} ${ENTRYPOINT}"
 fi
