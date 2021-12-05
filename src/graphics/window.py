@@ -34,6 +34,7 @@ class Window:
         self.pause_btn: Switch = None
         self.reset_btn: Button = None
         self.forward_btn: Button = None
+        self.backward_btn: Button = None
 
     def __on_delete(self) -> None:
         """
@@ -141,8 +142,14 @@ class Window:
         self.slow_btn.set_on(self.timer.slow)
         self.__tick()
 
-    def __forward(self) -> None:
+    def __fwd(self) -> None:
         self.timer.forward()
+        self.pause_btn.set_on(self.timer.running)
+        self.slow_btn.set_on(self.timer.slow)
+        self.__tick()
+
+    def __bwd(self) -> None:
+        self.timer.backward()
         self.pause_btn.set_on(self.timer.running)
         self.slow_btn.set_on(self.timer.slow)
         self.__tick()
@@ -150,8 +157,9 @@ class Window:
     def __draw_buttons(self) -> None:
         self.slow_btn = Switch(self.window, ini.get_img('slow'), self.__slow).pack(side='left', padx=16, pady=10)
         self.pause_btn = Switch(self.window, ini.get_img('run'), self.__pause).pack(side='left', padx=16, pady=10)
-        self.forward_btn = Button(self.window, ini.get_img('fwd'), self.__forward).pack(side='right', padx=16, pady=10)
-        self.reset_btn = Button(self.window, ini.get_img('reset'), self.__reset).pack(side='right', padx=16, pady=10)
+        self.forward_btn = Button(self.window, ini.get_img('fwd'), self.__fwd).pack(side='right', padx=16, pady=10)
+        self.backward_btn = Button(self.window, ini.get_img('bwd'), self.__bwd).pack(side='right', padx=0, pady=10)
+        self.reset_btn = Button(self.window, ini.get_img('reset'), self.__reset).pack(side='right', padx=24, pady=10)
 
     def show(self) -> None:
         """

@@ -44,3 +44,4 @@ slow=resources/images/slow.png
 run=resources/images/run.png
 reset=resources/images/reset.png
 fwd=resources/images/forward.png
+bwd=resources/images/backward.png

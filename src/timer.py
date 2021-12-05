@@ -105,3 +105,19 @@ class Timer:
             self.running = False
             self.slow = 0
             music.stop()
+
+    def backward(self) -> None:
+        """ If it's not the end, it stops the timer, un-slows it and moves the clock one hour backward. """
+        changed = False
+        if self.minute != self.START_MINUTE and not self.end:
+            self.__set_time(self.day, self.hour, self.START_MINUTE)
+            changed = True
+        elif not (self.hour == self.START_HOUR and self.day == self.START_DAY) and not self.end:
+            new_hour = (self.hour - 1) % 24
+            new_day = self.day - 1 if new_hour == self.START_HOUR - 1 else self.day
+            self.__set_time(new_day, new_hour, self.START_MINUTE)
+            changed = True
+        if changed:
+            self.running = False
+            self.slow = 0
+            music.stop()
