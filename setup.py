@@ -1,6 +1,7 @@
 from src import ini
 
 from src.setupdata import SetupData
+from os.path import exists
 
 SH_DATA: SetupData = SetupData('PYTHON_CMD=', 'ENTRYPOINT=')
 VBS_DATA: SetupData = SetupData('pythonCmd = ', 'entrypoint = ')
@@ -11,6 +12,9 @@ def __setup_script(file_key: str, file_data: SetupData) -> None:
     entry = ini.get_sys('entrypoint')
 
     file = ini.get_sys(file_key)
+    if not exists(file):
+        return
+
     newlines = []
     with open(file, 'r', encoding='utf-8') as script:
         for line in script.readlines():
