@@ -9,16 +9,19 @@ class Switch(Button):
     __RELIEF_ON = tk.SUNKEN
     __RELIEF_OFF = tk.RAISED
 
-    def __init__(self, master: tk.Tk, icon_path: str, cmd: Callable, **kwargs):
+    def __init__(self, master: tk.Tk, icon_off: str, icon_on: str, cmd: Callable, **kwargs):
         """
-        Creates a switch, a button with two states, represented by two different values of the 'relief' property.
+        Creates a switch, a button with two states, represented by two different values of the 'relief' property and
+        two different icons.
 
         :param master: parent of the switch
-        :param icon_path: path to the PNG icon
+        :param icon_off: path to the PNG icon used when the button is off
+        :param icon_on: path to the PNG icon used when the button is on
         :param cmd: function to call on click
         :param kwargs: additional arguments for the button's creation
         """
-        super().__init__(master, icon_path, cmd, relief=self.__RELIEF_OFF, **kwargs)
+        super().__init__(master, icon_off, cmd, relief=self.__RELIEF_OFF, **kwargs)
+        self.icon_on: tk.PhotoImage = tk.PhotoImage(file=icon_on)
         self.var: tk.StringVar = tk.StringVar(master, self.__RELIEF_OFF)
 
     def pack(self, **kwargs) -> Switch:
@@ -33,7 +36,8 @@ class Switch(Button):
 
         def on_change(varname, index, mode):
             relief = self.master.getvar(varname).split(":")[0]
-            self._btn.configure(relief=relief)
+            icon_img = self.icon if relief == tk.RAISED else self.icon_on
+            self._btn.configure(relief=relief, image=icon_img)
 
         self.var.trace_add('write', on_change)
 

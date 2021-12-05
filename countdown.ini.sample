@@ -40,8 +40,10 @@ rumble=resources/sounds/rumble.mp3
 transition=resources/sounds/transition.mp3
 
 [IMAGES]
-slow=resources/images/slow.png
-run=resources/images/run.png
+slow-off=resources/images/slow_off.png
+slow-on=resources/images/slow_on.png
+run-off=resources/images/run_off.png
+run-on=resources/images/run_on.png
 reset=resources/images/reset.png
 fwd=resources/images/forward.png
 bwd=resources/images/backward.png

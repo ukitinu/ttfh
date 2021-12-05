@@ -14,7 +14,7 @@ class Button:
         :param kwargs: additional arguments for the button's creation
         """
         self.master: tk.Tk = master
-        self.icon = tk.PhotoImage(file=icon_path)
+        self.icon: tk.PhotoImage = tk.PhotoImage(file=icon_path)
         self.cmd: Callable = cmd
         self.style_args = kwargs
         self._btn: tk.Button = None
