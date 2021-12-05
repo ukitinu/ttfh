@@ -155,8 +155,10 @@ class Window:
         self.__tick()
 
     def __draw_buttons(self) -> None:
-        self.slow_btn = Switch(self.window, ini.get_img('slow'), self.__slow).pack(side='left', padx=16, pady=10)
-        self.pause_btn = Switch(self.window, ini.get_img('run'), self.__pause).pack(side='left', padx=16, pady=10)
+        self.slow_btn = Switch(self.window, ini.get_img('slow-off'), ini.get_img('slow-on'), self.__slow)
+        self.slow_btn.pack(side='left', padx=16, pady=10)
+        self.pause_btn = Switch(self.window, ini.get_img('run-off'), ini.get_img('run-on'), self.__pause)
+        self.pause_btn.pack(side='left', padx=16, pady=10)
         self.forward_btn = Button(self.window, ini.get_img('fwd'), self.__fwd).pack(side='right', padx=16, pady=10)
         self.backward_btn = Button(self.window, ini.get_img('bwd'), self.__bwd).pack(side='right', padx=0, pady=10)
         self.reset_btn = Button(self.window, ini.get_img('reset'), self.__reset).pack(side='right', padx=24, pady=10)
