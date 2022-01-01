@@ -4,10 +4,10 @@ import sys
 import tkinter as tk
 
 from src import ini
-from src import timedata
 from src.graphics.button import Button
 from src.graphics.switch import Switch
-from src.timer import Timer
+from src import timer
+from src.timer import Clock
 
 
 class Window:
@@ -22,14 +22,14 @@ class Window:
     __BTN_HEIGHT = 48
     __HOUR_HEIGHT = __HEIGHT - __DAY_HEIGHT - __PERIOD_HEIGHT - __BTN_HEIGHT
 
-    def __init__(self, timer: Timer):
+    def __init__(self, clock: Clock):
         self.window = tk.Tk()
         self.window.wm_protocol("WM_DELETE_WINDOW", self.__on_delete)
 
-        self.timer = timer
-        self.day = tk.StringVar(self.window, timedata.get_day(self.timer))
-        self.period = tk.StringVar(self.window, timedata.get_period(self.timer))
-        self.time = tk.StringVar(self.window, timedata.get_time(self.timer))
+        self.clock = clock
+        self.day = tk.StringVar(self.window, timer.get_day(self.clock))
+        self.period = tk.StringVar(self.window, timer.get_period(self.clock))
+        self.time = tk.StringVar(self.window, timer.get_time(self.clock))
         self.slow_btn: Switch = None
         self.pause_btn: Switch = None
         self.reset_btn: Button = None
@@ -45,14 +45,14 @@ class Window:
         sys.exit(0)
 
     def __make_continue(self) -> None:
-        save_time = f'--day {self.timer.day} --hour {self.timer.hour} --minute {self.timer.minute}'
+        save_time = f'--day {self.clock.day} --hour {self.clock.hour} --minute {self.clock.minute}'
         with open('continue', 'w', encoding='utf-8') as batch_file:
             batch_file.write(f'{ini.get_sys("entrypoint")} {save_time}\n')
 
     def __tick(self):
-        self.day.set(timedata.get_day(self.timer))
-        self.period.set(timedata.get_period(self.timer))
-        self.time.set(timedata.get_time(self.timer))
+        self.day.set(timer.get_day(self.clock))
+        self.period.set(timer.get_period(self.clock))
+        self.time.set(timer.get_time(self.clock))
 
     @staticmethod
     def __draw_circle(canvas: tk.Canvas, x_coord: int, y_coord: int, ray: int, **kwargs):
@@ -63,7 +63,7 @@ class Window:
 
     def __calc_arc_extent(self, minutes: int) -> int:
         extent = -1 * minutes * 6
-        if minutes == 0 and self.timer.hour == 5 and self.timer.day == 1:
+        if minutes == 0 and self.clock.hour == 5 and self.clock.day == 1:
             return 0
         if minutes == 0:
             return -359
@@ -129,29 +129,29 @@ class Window:
         self.time.trace_add('write', on_change)
 
     def __slow(self) -> None:
-        self.timer.cycle_millis()
-        self.slow_btn.set_on(self.timer.slow)
+        self.clock.cycle_millis()
+        self.slow_btn.set_on(self.clock.slow)
 
     def __pause(self) -> None:
-        self.timer.un_pause()
-        self.pause_btn.set_on(self.timer.running)
+        self.clock.un_pause()
+        self.pause_btn.set_on(self.clock.running)
 
     def __reset(self) -> None:
-        self.timer.reset()
-        self.pause_btn.set_on(self.timer.running)
-        self.slow_btn.set_on(self.timer.slow)
+        self.clock.reset()
+        self.pause_btn.set_on(self.clock.running)
+        self.slow_btn.set_on(self.clock.slow)
         self.__tick()
 
     def __fwd(self) -> None:
-        self.timer.forward()
-        self.pause_btn.set_on(self.timer.running)
-        self.slow_btn.set_on(self.timer.slow)
+        self.clock.forward()
+        self.pause_btn.set_on(self.clock.running)
+        self.slow_btn.set_on(self.clock.slow)
         self.__tick()
 
     def __bwd(self) -> None:
-        self.timer.backward()
-        self.pause_btn.set_on(self.timer.running)
-        self.slow_btn.set_on(self.timer.slow)
+        self.clock.backward()
+        self.pause_btn.set_on(self.clock.running)
+        self.slow_btn.set_on(self.clock.slow)
         self.__tick()
 
     def __draw_buttons(self) -> None:
@@ -178,10 +178,10 @@ class Window:
         self.__draw_buttons()
 
         def trigger_change():
-            if self.timer.running:
-                self.timer.update_time()
+            if self.clock.running:
+                self.clock.update_time()
                 self.__tick()
-            self.window.after(self.timer.get_interval(), trigger_change)
+            self.window.after(self.clock.get_interval(), trigger_change)
 
-        self.window.after(self.timer.get_interval(), trigger_change)
+        self.window.after(self.clock.get_interval(), trigger_change)
         self.window.mainloop()
