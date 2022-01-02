@@ -4,9 +4,9 @@ import sys
 import tkinter as tk
 
 from src import ini
+from src import timer
 from src.graphics.button import Button
 from src.graphics.switch import Switch
-from src import timer
 from src.timer import Clock
 
 
