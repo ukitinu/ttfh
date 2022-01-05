@@ -170,7 +170,7 @@ class Window:
         self.window.geometry(f'{self.__WIDTH}x{self.__HEIGHT}+{self.__POS_X}+{self.__POS_Y}')
         self.window.config(bg=self.__BG_COLOUR)
         self.window.resizable(False, False)
-        self.window.title('Countdown')
+        self.window.title('Till the Final Hour')
 
         self.__draw_day_canvas()
         self.__draw_period_canvas()

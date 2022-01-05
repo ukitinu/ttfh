@@ -1,4 +1,4 @@
-# countdown
+# Till the Final Hour
 Graphical countdown timer made for a p&amp;p campaign loosely inspired by *TLOZ: Majora's Mask*.
 
 **Sound effects are supported, but not supplied.**  
