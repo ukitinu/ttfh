@@ -3,10 +3,7 @@ from __future__ import annotations
 import tkinter as tk
 from typing import Callable
 
-from src import ini
 from src.graphics import utils
-from src.graphics.button import Button
-from src.graphics.switch import Switch
 from src.timer import Clock
 
 
@@ -87,7 +84,8 @@ class ClockPanel(Panel):
         text_id = canvas.create_text(self.style.width / 2, self.style.height / 2,
                                      anchor=tk.CENTER,
                                      text=self.style_var.get().split(":")[0],
-                                     fill=self.style_var.get().split(":")[1],  # 'white'
+                                     # fill=self.style_var.get().split(":")[1],  # 'white',
+                                     fill='white',
                                      font=self.style.font)
 
         utils.draw_circle(canvas, self.style.width // 2, self.style.height // 2, self.style.width // 3,
