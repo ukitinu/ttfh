@@ -3,7 +3,10 @@ from __future__ import annotations
 import tkinter as tk
 from typing import Callable
 
+from src import ini
 from src.graphics import utils
+from src.graphics.button import Button
+from src.graphics.switch import Switch
 from src.timer import Clock
 
 
