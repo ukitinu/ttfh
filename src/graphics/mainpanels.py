@@ -1,50 +1,53 @@
 from __future__ import annotations
 
 import tkinter as tk
+from typing import List
 
 from src import timer
 from src.graphics.actionpanels import ButtonPanel
 from src.graphics.panels import TextPanel, PanelStyle, ClockPanel, Panel
 from src.timer import Clock
 
+_BG_COLOUR = '#000000'
+_DAY_HEIGHT = 64
+_PERIOD_HEIGHT = 32
+_BTN_HEIGHT = 48
 
-class MainPanel(Panel):
-    _BG_COLOUR = '#000000'
-    _DAY_HEIGHT = 64
-    _PERIOD_HEIGHT = 32
-    _BTN_HEIGHT = 48
 
-    def __init__(self, root: tk.Tk, clock: Clock, width: int, height: int):
-        self.root = root
-        self.clock = clock
-        self.width = width
-        self.height = height
-        self.hour_height = self.height - self._DAY_HEIGHT - self._PERIOD_HEIGHT - self._BTN_HEIGHT
+def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Panel:
+    main = PanelHolder(root, width, height)
+    main.add_display(TextPanel(root, clock, PanelStyle(width, _DAY_HEIGHT, _BG_COLOUR, 'Arial 24 bold'), timer.get_day))
+    main.add_display(
+        TextPanel(root, clock, PanelStyle(width, _PERIOD_HEIGHT, _BG_COLOUR, 'Arial 18 bold'), timer.get_period))
 
-        self.day_panel: Panel = TextPanel(self.root, self.clock,
-                                          PanelStyle(self.width, self._DAY_HEIGHT, self._BG_COLOUR,
-                                                     'Arial 24 bold'),
-                                          timer.get_day)
+    hour_height = height - _DAY_HEIGHT - _PERIOD_HEIGHT - _BTN_HEIGHT
+    main.add_display(ClockPanel(root, clock, PanelStyle(width, hour_height, _BG_COLOUR, 'Arial 64'), timer.get_time))
 
-        self.period_panel: Panel = TextPanel(self.root, self.clock,
-                                             PanelStyle(self.width, self._PERIOD_HEIGHT, self._BG_COLOUR,
-                                                        'Arial 18 bold'),
-                                             timer.get_period)
+    main.add_action(ButtonPanel(root, clock, main))
 
-        self.clock_panel: Panel = ClockPanel(self.root, self.clock,
-                                             PanelStyle(self.width, self.hour_height, self._BG_COLOUR,
-                                                        'Arial 64'),
-                                             timer.get_time)
+    return main
 
-        self.button_panel: Panel = ButtonPanel(self.root, self.clock, self)
 
-    def draw(self):
-        self.day_panel.draw()
-        self.period_panel.draw()
-        self.clock_panel.draw()
-        self.button_panel.draw()
+class PanelHolder(Panel):
+    def __init__(self, root: tk.Tk, width: int, height: int):
+        self.root: tk.Tk = root
+        self.width: int = width
+        self.height: int = height
+        self.display_panels: List[Panel] = []
+        self.action_panels: List[Panel] = []
 
-    def tick(self):
-        self.day_panel.tick()
-        self.period_panel.tick()
-        self.clock_panel.tick()
+    def draw(self) -> None:
+        for panel in self.display_panels:
+            panel.draw()
+        for panel in self.action_panels:
+            panel.draw()
+
+    def tick(self) -> None:
+        for panel in self.display_panels:
+            panel.tick()
+
+    def add_display(self, panel: Panel):
+        self.display_panels.append(panel)
+
+    def add_action(self, panel: Panel):
+        self.action_panels.append(panel)
