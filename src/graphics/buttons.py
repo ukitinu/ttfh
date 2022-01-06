@@ -5,7 +5,7 @@ from typing import Callable, Literal, List, Tuple
 
 
 class ButtonPosition:
-    """ Contains the kwargs used in Button.pack() """
+    """ Data holder class containing the kwargs used by Button.pack() """
 
     def __init__(self, side: Literal["left", "right", "top", "bottom"], padx: int, pady: int, **kwargs):
         self.side: Literal["left", "right", "top", "bottom"] = side
@@ -42,16 +42,16 @@ class ButtonAction:
 class Button:
     _RELIEF = tk.GROOVE
 
-    def __init__(self, root: tk.Tk, icon_path: str, cmd: Callable, **kwargs):
+    def __init__(self, root: tk.Tk, icon_path: str, action: ButtonAction, **kwargs):
         """
         :param root: root Tk of the button
         :param icon_path: path to the PNG icon
-        :param cmd: function to call on click
+        :param action: action to call on click
         :param kwargs: additional arguments for the button's creation
         """
         self.root: tk.Tk = root
         self.icon: tk.PhotoImage = tk.PhotoImage(file=icon_path)
-        self.cmd: Callable = cmd
+        self.action: ButtonAction = action
         self.style_args = kwargs
         self._btn: tk.Button = None
 
@@ -64,7 +64,7 @@ class Button:
         if 'relief' not in self.style_args:
             self.style_args['relief'] = self._RELIEF
 
-        self._btn = tk.Button(self.root, image=self.icon, command=self.cmd, **self.style_args)
+        self._btn = tk.Button(self.root, image=self.icon, command=self.action.exec, **self.style_args)
         self._btn.pack(side=position.side, padx=position.padx, pady=position.pady, **position.kwargs)
         return self
 
@@ -73,7 +73,7 @@ class Switch(Button):
     _RELIEF_ON = tk.SUNKEN
     _RELIEF_OFF = tk.RAISED
 
-    def __init__(self, root: tk.Tk, icon_off: str, icon_on: str, cmd: Callable, **kwargs):
+    def __init__(self, root: tk.Tk, icon_off: str, icon_on: str, action: ButtonAction, **kwargs):
         """
         Creates a switch, a button with two states, represented by two different values of the 'relief' property and
         two different icons.
@@ -81,10 +81,10 @@ class Switch(Button):
         :param root: root Tk of the switch
         :param icon_off: path to the PNG icon used when the button is off
         :param icon_on: path to the PNG icon used when the button is on
-        :param cmd: function to call on click
+        :param action: action to call on click
         :param kwargs: additional arguments for the button's creation
         """
-        super().__init__(root, icon_off, cmd, relief=self._RELIEF_OFF, **kwargs)
+        super().__init__(root, icon_off, action, relief=self._RELIEF_OFF, **kwargs)
         self.icon_on: tk.PhotoImage = tk.PhotoImage(file=icon_on)
         self.var: tk.StringVar = tk.StringVar(root, self._RELIEF_OFF)
 
