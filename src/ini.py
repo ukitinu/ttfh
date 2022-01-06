@@ -11,27 +11,27 @@ ini_values = configparser.ConfigParser()
 ini_values.read(INI_FILE)
 
 
-def get_label(key: str) -> str:
-    """ Gets LABELS.key value from the .ini file """
-    return __get('LABELS', key)
+def gui(key: str) -> str:
+    """ Gets GUI.key value from the .ini file """
+    return __get('GUI', key)
 
 
-def get_timer(key: str) -> str:
+def timer(key: str) -> str:
     """ Gets TIMER.key value from the .ini file """
     return __get('TIMER', key)
 
 
-def get_sound(key: str) -> str:
+def sound(key: str) -> str:
     """ Gets SOUNDS.key value from the .ini file """
     return __get('SOUNDS', key)
 
 
-def get_sys(key: str) -> str:
+def sys(key: str) -> str:
     """ Gets SYSTEM.key value from the .ini file """
     return __get('SYSTEM', key)
 
 
-def get_img(key: str) -> str:
+def img(key: str) -> str:
     """ Gets IMAGES.key value from the .ini file """
     return __get('IMAGES', key)
 

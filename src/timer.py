@@ -5,8 +5,8 @@ from src import ini
 
 
 def __get_label(label: str) -> str:
-    name = ini.get_label(label + '-name')
-    colour = ini.get_label(label + '-colour')
+    name = ini.gui(label + '-name')
+    colour = ini.gui(label + '-colour')
     return name + ':' + colour
 
 
@@ -38,9 +38,9 @@ class Clock:
     START_DAY = 1
     START_HOUR = 5
     START_MINUTE = 0
-    __INTERVALS = [int(ini.get_timer('interval-short')), int(ini.get_timer('interval-long'))]
-    __BELL_HOURS = tuple(int(h) for h in ini.get_timer('bell-hours').split(','))
-    __RUMBLE_HOURS = tuple(int(h) for h in ini.get_timer('rumble-hours').split(','))
+    __INTERVALS = [int(ini.timer('interval-short')), int(ini.timer('interval-long'))]
+    __BELL_HOURS = tuple(int(h) for h in ini.timer('bell-hours').split(','))
+    __RUMBLE_HOURS = tuple(int(h) for h in ini.timer('rumble-hours').split(','))
 
     __HOUR_DURATION = 60
     __DAY_MAX = 3

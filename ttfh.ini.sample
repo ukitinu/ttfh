@@ -4,7 +4,7 @@ entrypoint=entrypoint.py
 run-sh=run.sh
 run-vbs=run.vbs
 
-[LABELS]
+[GUI]
 day-0-name=UN NUOVO GIORNO
 day-0-colour=white
 day-1-name=PRIMO GIORNO

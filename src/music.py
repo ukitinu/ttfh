@@ -47,6 +47,6 @@ def __play(key: str, channel: int) -> None:
     :param channel: channel number, to allow multiple sounds simultaneously.
     """
     try:
-        mixer.Channel(channel).play(mixer.Sound(ini.get_sound(key)))
+        mixer.Channel(channel).play(mixer.Sound(ini.sound(key)))
     except FileNotFoundError:
         pass

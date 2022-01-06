@@ -8,10 +8,10 @@ VBS_DATA: SetupData = SetupData('pythonCmd = ', 'entrypoint = ')
 
 
 def __setup_script(file_key: str, file_data: SetupData) -> None:
-    py_cmd = ini.get_sys('python3')
-    entry = ini.get_sys('entrypoint')
+    py_cmd = ini.sys('python3')
+    entry = ini.sys('entrypoint')
 
-    file = ini.get_sys(file_key)
+    file = ini.sys(file_key)
     if not exists(file):
         return
 

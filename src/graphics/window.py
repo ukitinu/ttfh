@@ -36,7 +36,7 @@ class Window:
         """
         save_time = f'--day {self.clock.day} --hour {self.clock.hour} --minute {self.clock.minute}'
         with open('continue', 'w', encoding='utf-8') as batch_file:
-            batch_file.write(f'{ini.get_sys("entrypoint")} {save_time}\n')
+            batch_file.write(f'{ini.sys("entrypoint")} {save_time}\n')
 
     def _tick(self):
         self.panel.tick()
