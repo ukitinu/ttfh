@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import tkinter as tk
-from operator import itemgetter
 from typing import Tuple, List
 
 from src import ini
@@ -9,8 +8,11 @@ from src.graphics.buttons import Button, Switch, ButtonAction
 from src.graphics.panels import Panel
 from src.timer import Clock
 
+BTN_SIZE = 24
+BTN_PADDING = 16
 
-def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, height: int) -> Panel:
+
+def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int) -> Panel:
     nav = ButtonPanel(clock)
 
     pause_btn = Switch(root, ini.img('run-off'), ini.img('run-on'), None)
@@ -43,11 +45,12 @@ def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, height: int) -> P
         end=[parent.tick])
     reset_btn = Button(root, ini.img('reset'), reset_act)
 
-    nav.add_button(slow_btn, 1, 16, height)
-    nav.add_button(pause_btn, 2, 40, height)
-    nav.add_button(forward_btn, 3, 128, height)
-    nav.add_button(backward_btn, 4, 164, height)
-    nav.add_button(reset_btn, 5, 200, height)
+    nav.add_button(slow_btn, BTN_PADDING, height)
+    nav.add_button(pause_btn, BTN_PADDING + BTN_SIZE + BTN_PADDING, height)
+
+    nav.add_button(forward_btn, width - BTN_PADDING - BTN_SIZE, height)
+    nav.add_button(backward_btn, width - 2 * BTN_PADDING - 2 * BTN_SIZE, height)
+    nav.add_button(reset_btn, width - 2 * BTN_PADDING - 4 * BTN_SIZE, height)
 
     return nav
 
@@ -59,22 +62,20 @@ class ButtonPanel(Panel):
 
     def __init__(self, clock: Clock):
         self.clock: Clock = clock
-        self._buttons: List[Tuple[int, Button, int, int]] = []
+        self._buttons: List[Tuple[Button, int, int]] = []
 
     def draw(self) -> None:
-        self._buttons.sort(key=itemgetter(0))
-        for _, btn, pos_x, pos_y in self._buttons:
+        for btn, pos_x, pos_y in self._buttons:
             btn.place(pos_x, pos_y)
 
     def tick(self) -> None:
         """ Nothing to do """
         pass
 
-    def add_button(self, btn: Button, order: int, pos_x: int, pos_y: int) -> None:
+    def add_button(self, btn: Button, pos_x: int, pos_y: int) -> None:
         """
         :param btn: button to add
-        :param order: integer representing the draw order of the button
         :param pos_x: button x-coordinate
         :param pos_y: button y-coordinate
         """
-        self._buttons.append((order, btn, pos_x, pos_y))
+        self._buttons.append((btn, pos_x, pos_y))

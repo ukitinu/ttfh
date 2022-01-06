@@ -33,7 +33,7 @@ def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Pan
     hour_height = height - _DAY_HEIGHT - _PERIOD_HEIGHT - _BTN_HEIGHT
     hour = ClockPanel(root, clock, PanelStyle(width, hour_height, _BG_COLOUR, 'Arial 64'), timer.get_time)
 
-    buttons = actionpanels.create_nav_panel(root, clock, main, height - _BTN_HEIGHT)
+    buttons = actionpanels.create_nav_panel(root, clock, main, width, height - _BTN_HEIGHT)
 
     main.add_panel(day, 1, True)
     main.add_panel(period, 2, True)
