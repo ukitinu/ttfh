@@ -47,23 +47,23 @@ class PanelHolder(Panel):
     def __init__(self, width: int, height: int):
         self.width: int = width
         self.height: int = height
-        self.panels: List[Tuple[int, Panel, bool]] = []
+        self._panels: List[Tuple[int, Panel, bool]] = []
 
     def draw(self) -> None:
-        self.panels.sort(key=itemgetter(0))
-        for _, panel, _ in self.panels:
+        self._panels.sort(key=itemgetter(0))
+        for _, panel, _ in self._panels:
             panel.draw()
 
     def tick(self) -> None:
-        self.panels.sort(key=itemgetter(0))
-        for _, panel, do_tick in self.panels:
+        self._panels.sort(key=itemgetter(0))
+        for _, panel, do_tick in self._panels:
             if do_tick:
                 panel.tick()
 
-    def add_panel(self, panel: Panel, order: int, do_tick: bool) -> None:
+    def add_panel(self, panel: Panel, order: int, do_tick: bool = False) -> None:
         """
         :param panel: panel to add
         :param order: integer representing the draw (and tick) order of the panel
         :param do_tick: if true, the method tick() will be called on the panel
         """
-        self.panels.append((order, panel, do_tick))
+        self._panels.append((order, panel, do_tick))
