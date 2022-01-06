@@ -5,6 +5,12 @@ run-sh=run.sh
 run-vbs=run.vbs
 
 [GUI]
+; window
+width=320
+height=400
+pos-x=100
+pos-y=100
+; days
 day-0-name=UN NUOVO GIORNO
 day-0-colour=white
 day-1-name=PRIMO GIORNO
@@ -13,7 +19,7 @@ day-2-name=SECONDO GIORNO
 day-2-colour=#ed8210
 day-3-name=ULTIMO GIORNO
 day-3-colour=#d1670a
-
+; periods
 dawn-name=alba
 dawn-colour=yellow
 morning-name=mattina

@@ -11,10 +11,10 @@ from src.timer import Clock
 
 class Window:
     _BG_COLOUR = '#000000'
-    _WIDTH = 320
-    _HEIGHT = 400
-    _POS_X = 100
-    _POS_Y = 100
+    _WIDTH = int(ini.gui("width"))
+    _HEIGHT = int(ini.gui("height"))
+    _POS_X = int(ini.gui("pos-x"))
+    _POS_Y = int(ini.gui("pos-y"))
 
     def __init__(self, clock: Clock):
         self.window = tk.Tk()
