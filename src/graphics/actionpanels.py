@@ -16,31 +16,35 @@ def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel) -> Panel:
     pause_pos = ButtonPosition('left', 16, 10)
     pause_btn = Switch(root, ini.get_img('run-off'), ini.get_img('run-on'), None)
     # the action needs the button, a simple on/off doesn't work as clock.running is changed by a lot of other objects
-    pause_act = ButtonAction(start=[clock.un_pause], middle=[(pause_btn.set_on, clock.running)])
+    pause_act = ButtonAction(clock, start=[clock.un_pause], middle=[(pause_btn.set_on, "running")])
     pause_btn.action = pause_act
 
     slow_pos = ButtonPosition('left', 16, 10)
-    slow_act = ButtonAction(start=[clock.cycle_millis], middle=[(pause_btn.set_on, clock.running)])
-    slow_btn = Switch(root, ini.get_img('slow-off'), ini.get_img('slow-on'), slow_act)
+    slow_btn = Switch(root, ini.get_img('slow-off'), ini.get_img('slow-on'), None)
+    slow_act = ButtonAction(clock, start=[clock.cycle_millis], middle=[(slow_btn.set_on, "slow")])
+    slow_btn.action = slow_act
 
     forward_pos = ButtonPosition('right', 16, 10)
     forward_act = ButtonAction(
+        clock,
         start=[clock.forward],
-        middle=[(pause_btn.set_on, clock.running), (slow_btn.set_on, clock.slow)],
+        middle=[(pause_btn.set_on, "running"), (slow_btn.set_on, "slow")],
         end=[parent.tick])
     forward_btn = Button(root, ini.get_img('fwd'), forward_act)
 
     backward_pos = ButtonPosition('right', 0, 10)
     backward_act = ButtonAction(
+        clock,
         start=[clock.backward],
-        middle=[(pause_btn.set_on, clock.running), (slow_btn.set_on, clock.slow)],
+        middle=[(pause_btn.set_on, "running"), (slow_btn.set_on, "slow")],
         end=[parent.tick])
     backward_btn = Button(root, ini.get_img('bwd'), backward_act)
 
     reset_pos = ButtonPosition('right', 24, 10)
     reset_act = ButtonAction(
+        clock,
         start=[clock.reset],
-        middle=[(pause_btn.set_on, clock.running), (slow_btn.set_on, clock.slow)],
+        middle=[(pause_btn.set_on, "running"), (slow_btn.set_on, "slow")],
         end=[parent.tick])
     reset_btn = Button(root, ini.get_img('reset'), reset_act)
 

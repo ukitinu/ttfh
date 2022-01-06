@@ -3,6 +3,8 @@ from __future__ import annotations
 import tkinter as tk
 from typing import Callable, Literal, List, Tuple
 
+from src.timer import Clock
+
 
 class ButtonPosition:
     """ Data holder class containing the kwargs used by Button.pack() """
@@ -16,13 +18,14 @@ class ButtonPosition:
 
 class ButtonAction:
     def __init__(self,
+                 clock: Clock,
                  start: List[Callable] = None,
-                 middle: List[Tuple[Callable, bool]] = None,
+                 middle: List[Tuple[Callable, str]] = None,
                  end: List[Callable] = None):
         """
         :param start: callables to execute first
-        :param middle: callables and switch's set_on to execute in-between. If the bool is None the callable
-        is executed without argument.
+        :param middle: callables and switch's set_on to execute in-between. If the str is None the callable
+        is executed without argument, otherwise it is executed with getattr(self.clock, str)
         :param end: callables to execute last
         """
         if start is None:
@@ -31,18 +34,19 @@ class ButtonAction:
             middle = []
         if end is None:
             end = []
-
+        self.clock: Clock = clock
         self.start: List[Callable] = start
-        self.middle: List[Tuple[Callable, bool]] = middle
+        self.middle: List[Tuple[Callable, str]] = middle
         self.end: List[Callable] = end
 
     def exec(self) -> None:
         """ Executes the button action """
         for cmd in self.start:
             cmd()
-        for cmd, boolean in self.middle:
-            if boolean is not None:
-                cmd(boolean)
+        for cmd, attr in self.middle:
+            if attr is not None:
+                val = getattr(self.clock, attr)
+                cmd(val)
             else:
                 cmd()
         for cmd in self.end:
