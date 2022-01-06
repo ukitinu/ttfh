@@ -5,6 +5,7 @@ from operator import itemgetter
 from typing import List, Tuple
 
 from src import timer
+from src.graphics import actionpanels
 from src.graphics.panels import TextPanel, PanelStyle, ClockPanel, Panel
 from src.timer import Clock
 
@@ -32,11 +33,12 @@ def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Pan
     hour_height = height - _DAY_HEIGHT - _PERIOD_HEIGHT - _BTN_HEIGHT
     hour = ClockPanel(root, clock, PanelStyle(width, hour_height, _BG_COLOUR, 'Arial 64'), timer.get_time)
 
+    buttons = actionpanels.create_nav_panel(root, clock, main)
+
     main.add_panel(day, 1, True)
     main.add_panel(period, 2, True)
     main.add_panel(hour, 3, True)
-
-    # main.add_action(ButtonPanel(root, clock, main))
+    main.add_panel(buttons, 4, False)
 
     return main
 

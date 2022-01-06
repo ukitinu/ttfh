@@ -96,7 +96,7 @@ class Switch(Button):
         """
         super().__init__(root, icon_off, action, relief=self._RELIEF_OFF, **kwargs)
         self.icon_on: tk.PhotoImage = tk.PhotoImage(file=icon_on)
-        self.var: tk.StringVar = tk.StringVar(root, self._RELIEF_OFF)
+        self.var: tk.BooleanVar = tk.BooleanVar(root, False)
 
     def pack(self, position: ButtonPosition) -> Switch:
         """
@@ -109,8 +109,9 @@ class Switch(Button):
         super().pack(position)
 
         def on_change(varname, index, mode):
-            relief = self.root.getvar(varname).split(":")[0]
-            icon_img = self.icon if relief == tk.RAISED else self.icon_on
+            """ self.icon is icon_off """
+            relief = self._RELIEF_ON if self.var.get() else self._RELIEF_OFF
+            icon_img = self.icon_on if self.var.get() else self.icon
             self._btn.configure(relief=relief, image=icon_img)
 
         self.var.trace_add('write', on_change)
@@ -123,5 +124,4 @@ class Switch(Button):
 
         :param active: bool of the new status of the switch.
         """
-        relief = self._RELIEF_ON if active else self._RELIEF_OFF
-        self.var.set(relief)
+        self.var.set(active)
