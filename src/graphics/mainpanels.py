@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 from src import timer
 from src.graphics import actionpanels
-from src.graphics.panels import TextPanel, PanelStyle, ClockPanel, Panel
+from src.graphics.panels import TextPanel, PanelStyle, ClockPanel, Panel, StaticPanel
 from src.timer import Clock
 
 _BG_COLOUR = '#000000'
@@ -31,39 +31,53 @@ def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Pan
     period = TextPanel(root, clock, PanelStyle(width, _PERIOD_HEIGHT, _BG_COLOUR, 'Arial 18 bold'), timer.get_period)
 
     hour_height = height - _DAY_HEIGHT - _PERIOD_HEIGHT - _BTN_HEIGHT
-    hour = ClockPanel(root, clock, PanelStyle(width, hour_height, _BG_COLOUR, 'Arial 64'), timer.get_time)
+    hour = ClockPanel(root, clock, PanelStyle(width, hour_height, _BG_COLOUR, 'Arial 64', 'white'), timer.get_time)
 
     buttons = actionpanels.create_nav_panel(root, clock, main)
 
     main.add_panel(day, 1, True)
     main.add_panel(period, 2, True)
     main.add_panel(hour, 3, True)
-    main.add_panel(buttons, 4, False)
+    main.add_panel(buttons, 4)
 
     return main
+
+
+def create_transition_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Panel:
+    trans = PanelHolder(width, height)
+
+    bar = StaticPanel(root, clock, PanelStyle(width, height // 3, _BG_COLOUR))
+    banner_height = height - 2 * (height // 3)
+    banner = TextPanel(root, clock, PanelStyle(width, banner_height, _BG_COLOUR, "Arial 28 bold"), timer.get_day)
+
+    trans.add_panel(bar, 1)
+    trans.add_panel(bar, 3)
+    trans.add_panel(banner, 1)
+
+    return trans
 
 
 class PanelHolder(Panel):
     def __init__(self, width: int, height: int):
         self.width: int = width
         self.height: int = height
-        self.panels: List[Tuple[int, Panel, bool]] = []
+        self._panels: List[Tuple[int, Panel, bool]] = []
 
     def draw(self) -> None:
-        self.panels.sort(key=itemgetter(0))
-        for _, panel, _ in self.panels:
+        self._panels.sort(key=itemgetter(0))
+        for _, panel, _ in self._panels:
             panel.draw()
 
     def tick(self) -> None:
-        self.panels.sort(key=itemgetter(0))
-        for _, panel, do_tick in self.panels:
+        self._panels.sort(key=itemgetter(0))
+        for _, panel, do_tick in self._panels:
             if do_tick:
                 panel.tick()
 
-    def add_panel(self, panel: Panel, order: int, do_tick: bool) -> None:
+    def add_panel(self, panel: Panel, order: int, do_tick: bool = False) -> None:
         """
         :param panel: panel to add
         :param order: integer representing the draw (and tick) order of the panel
         :param do_tick: if true, the method tick() will be called on the panel
         """
-        self.panels.append((order, panel, do_tick))
+        self._panels.append((order, panel, do_tick))

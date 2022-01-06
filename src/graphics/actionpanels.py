@@ -65,11 +65,11 @@ class ButtonPanel(Panel):
     def __init__(self, clock: Clock, parent: Panel):
         self.parent: Panel = parent
         self.clock: Clock = clock
-        self.buttons: List[Tuple[int, Button, ButtonPosition]] = []
+        self._buttons: List[Tuple[int, Button, ButtonPosition]] = []
 
     def draw(self) -> None:
-        self.buttons.sort(key=itemgetter(0))
-        for _, btn, pos in self.buttons:
+        self._buttons.sort(key=itemgetter(0))
+        for _, btn, pos in self._buttons:
             btn.pack(pos)
 
     def tick(self) -> None:
@@ -82,4 +82,4 @@ class ButtonPanel(Panel):
         :param order: integer representing the draw order of the button
         :param pos: button position
         """
-        self.buttons.append((order, btn, pos))
+        self._buttons.append((order, btn, pos))
