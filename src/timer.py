@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import re
 from typing import Dict, List
 from src import music
 from src import ini
@@ -153,3 +155,31 @@ class Clock:
             self.running = False
             self.slow = 0
             music.stop()
+
+
+class ClockTime:
+    _PATTERN = "^[1-3]\\.(?:[01][0-9]|2[0-3])\\.[0-5][0-9]$"
+
+    def __init__(self, day: int, hour: int, minute: int):
+        self.day = day
+        self.hour = hour
+        self.minute = minute
+
+    def __str__(self):
+        return f'{self.day}.{self.hour:02}.{self.minute:02}'
+
+    def __repr__(self):
+        return f'ClockTime({self.day}, {self.hour}, {self.minute})'
+
+    def __eq__(self, other):
+        if not isinstance(other, ClockTime):
+            return False
+        return self.day == other.day and self.hour == other.hour and self.minute == other.minute
+
+    @classmethod
+    def from_str(cls, string: str) -> ClockTime:
+        if re.match(cls._PATTERN, string) is None:
+            raise ValueError("Invalid string")
+
+        values = string.split(".")
+        return ClockTime(int(values[0]), int(values[1]), int(values[2]))
