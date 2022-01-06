@@ -15,27 +15,37 @@ class ButtonPosition:
 
 
 class ButtonAction:
-    def __init__(self, start_cmds: List[Callable], switch_cmds: List[Tuple[Callable, bool]], end_cmds: List[Callable]):
+    def __init__(self,
+                 start: List[Callable] = None,
+                 middle: List[Tuple[Callable, bool]] = None,
+                 end: List[Callable] = None):
         """
-        :param start_cmds: callables to execute first
-        :param switch_cmds: callables and switch's set_on to execute in-between. If the bool is None the callable
+        :param start: callables to execute first
+        :param middle: callables and switch's set_on to execute in-between. If the bool is None the callable
         is executed without argument.
-        :param end_cmds: callables to execute last
+        :param end: callables to execute last
         """
-        self.start_cmds: List[Callable] = start_cmds
-        self.switch_cmds: List[Tuple[Callable, bool]] = switch_cmds
-        self.end_cmds: List[Callable] = end_cmds
+        if start is None:
+            start = []
+        if middle is None:
+            middle = []
+        if end is None:
+            end = []
+
+        self.start: List[Callable] = start
+        self.middle: List[Tuple[Callable, bool]] = middle
+        self.end: List[Callable] = end
 
     def exec(self) -> None:
         """ Executes the button action """
-        for cmd in self.start_cmds:
+        for cmd in self.start:
             cmd()
-        for cmd, boolean in self.switch_cmds:
+        for cmd, boolean in self.middle:
             if boolean is not None:
                 cmd(boolean)
             else:
                 cmd()
-        for cmd in self.end_cmds:
+        for cmd in self.end:
             cmd()
 
 
