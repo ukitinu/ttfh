@@ -27,10 +27,14 @@ class ButtonAction:
         self.end_cmds: List[Callable] = end_cmds
 
     def exec(self) -> None:
+        """ Executes the button action """
         for cmd in self.start_cmds:
             cmd()
         for cmd, boolean in self.switch_cmds:
-            cmd(boolean) if boolean is not None else cmd()
+            if boolean is not None:
+                cmd(boolean)
+            else:
+                cmd()
         for cmd in self.end_cmds:
             cmd()
 
