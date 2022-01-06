@@ -3,9 +3,8 @@ from __future__ import annotations
 import tkinter as tk
 
 from src import ini
-from src.graphics.button import Button
+from src.graphics.buttons import Button, Switch
 from src.graphics.panels import Panel
-from src.graphics.switch import Switch
 from src.timer import Clock
 
 

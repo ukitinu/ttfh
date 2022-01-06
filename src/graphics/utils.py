@@ -12,7 +12,7 @@ def draw_circle(canvas: tk.Canvas, x_coord: int, y_coord: int, ray: int, **kwarg
     :param x_coord: circle's centre x-coordinate
     :param y_coord: circle's centre y-coordinate
     :param ray: circle's ray
-    :param kwargs: additional args shared by tkinter.Canvas::create_arc and tkinter.Canvas::create_oval
+    :param kwargs: additional args shared by tkinter.Canvas.create_arc() and tkinter.Canvas.create_oval()
     :return: int returned by tkinter
     """
     if "extent" in kwargs:
