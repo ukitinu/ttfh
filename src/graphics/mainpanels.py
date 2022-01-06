@@ -15,7 +15,9 @@ _BTN_HEIGHT = 48
 
 
 def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Panel:
-    main = PanelHolder(root, width, height)
+    main = PanelHolder(width, height)
+
+    # add order is important, defines display order
     main.add_display(TextPanel(root, clock, PanelStyle(width, _DAY_HEIGHT, _BG_COLOUR, 'Arial 24 bold'), timer.get_day))
     main.add_display(
         TextPanel(root, clock, PanelStyle(width, _PERIOD_HEIGHT, _BG_COLOUR, 'Arial 18 bold'), timer.get_period))
@@ -29,8 +31,7 @@ def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Pan
 
 
 class PanelHolder(Panel):
-    def __init__(self, root: tk.Tk, width: int, height: int):
-        self.root: tk.Tk = root
+    def __init__(self, width: int, height: int):
         self.width: int = width
         self.height: int = height
         self.display_panels: List[Panel] = []
