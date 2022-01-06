@@ -1,19 +1,9 @@
 from __future__ import annotations
 
 import tkinter as tk
-from typing import Callable, Literal, List, Tuple
+from typing import Callable, List, Tuple
 
 from src.timer import Clock
-
-
-class ButtonPosition:
-    """ Data holder class containing the kwargs used by Button.pack() """
-
-    def __init__(self, side: Literal["left", "right", "top", "bottom"], padx: int, pady: int, **kwargs):
-        self.side: Literal["left", "right", "top", "bottom"] = side
-        self.padx: int = padx
-        self.pady: int = pady
-        self.kwargs = kwargs
 
 
 class ButtonAction:
@@ -69,17 +59,18 @@ class Button:
         self.style_args = kwargs
         self._btn: tk.Button = None
 
-    def pack(self, position: ButtonPosition) -> Button:
+    def place(self, pos_x: int, pos_y: int) -> Button:
         """
         Packs the button. If no 'relief' argument was given at instantiation, it uses tk.GROOVE.
-        :param position: object containing the arguments for the tk.Button.pack() function
+        :param pos_x: x-coordinate of the button
+        :param pos_y: y-coordinate of the button
         :return: the object itself
         """
         if 'relief' not in self.style_args:
             self.style_args['relief'] = self._RELIEF
 
         self._btn = tk.Button(self.root, image=self.icon, command=self.action.exec, **self.style_args)
-        self._btn.pack(side=position.side, padx=position.padx, pady=position.pady, **position.kwargs)
+        self._btn.place(x=pos_x, y=pos_y)
         return self
 
 
@@ -102,15 +93,16 @@ class Switch(Button):
         self.icon_on: tk.PhotoImage = tk.PhotoImage(file=icon_on)
         self.var: tk.BooleanVar = tk.BooleanVar(root, False)
 
-    def pack(self, position: ButtonPosition) -> Switch:
+    def place(self, pos_x: int, pos_y: int) -> Switch:
         """
         Packs the switch and updates its appearance based on self.var value.
         The unused variables in the 'on_change' function are required by Tk.
 
-        :param position: object containing the arguments for the tk.Button.pack() function
+        :param pos_x: x-coordinate of the button
+        :param pos_y: y-coordinate of the button
         :return: the object itself
         """
-        super().pack(position)
+        super().place(pos_x, pos_y)
 
         def on_change(varname, index, mode):
             """ self.icon is icon_off """
