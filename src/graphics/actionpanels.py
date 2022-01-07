@@ -58,6 +58,10 @@ def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, heigh
     return nav
 
 
+def create_save_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int) -> Panel:
+    return SavePanel(root, clock, parent, width, height)
+
+
 class ButtonPanel(Panel):
     """
     Represents a panel containing various buttons.
@@ -90,12 +94,12 @@ class SavePanel(Panel):
     _ENTRY_PATTERN = "^[a-zA-Z0-9 ]{1,16}$"
     _ENTRY_RULES = "Rules:\n - length 1 to 16;\n - allowed characters: English alphabet letters, digits and whitespace"
 
-    def __init__(self, root: tk.Tk, clock: Clock, width: int, height: int, parent: Panel):
+    def __init__(self, root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int):
         self.root: tk.Tk = root
         self.clock: Clock = clock
+        self.parent: Panel = parent
         self.width: int = width
         self.height: int = height
-        self.parent: Panel = parent
         self._save_btn: Button = Button(self.root, ini.img('save'), self._save)
         self._load_btn: Button = Button(self.root, ini.img('load'), self._load)
         self._save_input: ttk.Entry = ttk.Entry(self.root, width=self._ENTRY_WIDTH)
