@@ -1,15 +1,18 @@
 from __future__ import annotations
 
+import re
 import tkinter as tk
-from typing import Tuple, List
+import tkinter.messagebox
+from tkinter import ttk
+from typing import Tuple, List, Dict, Optional
 
 from src import ini
 from src.graphics.buttons import Button, Switch, ButtonAction
 from src.graphics.panels import Panel
-from src.timer import Clock
+from src.timer import Clock, ClockTime
 
 BTN_SIZE = 24
-BTN_PADDING = 16
+SIDE_PAD = 16
 
 
 def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int) -> Panel:
@@ -45,12 +48,12 @@ def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, heigh
         end=[parent.tick])
     reset_btn = Button(root, ini.img('reset'), reset_act)
 
-    nav.add_button(slow_btn, BTN_PADDING, height)
-    nav.add_button(pause_btn, BTN_PADDING + BTN_SIZE + BTN_PADDING, height)
+    nav.add_button(slow_btn, SIDE_PAD, height)
+    nav.add_button(pause_btn, SIDE_PAD + BTN_SIZE + SIDE_PAD, height)
 
-    nav.add_button(forward_btn, width - BTN_PADDING - BTN_SIZE, height)
-    nav.add_button(backward_btn, width - 2 * BTN_PADDING - 2 * BTN_SIZE, height)
-    nav.add_button(reset_btn, width - 2 * BTN_PADDING - 4 * BTN_SIZE, height)
+    nav.add_button(forward_btn, width - SIDE_PAD - BTN_SIZE, height)
+    nav.add_button(backward_btn, width - 2 * SIDE_PAD - 2 * BTN_SIZE, height)
+    nav.add_button(reset_btn, width - 2 * SIDE_PAD - 4 * BTN_SIZE, height)
 
     return nav
 
@@ -69,7 +72,6 @@ class ButtonPanel(Panel):
             btn.place(pos_x, pos_y)
 
     def tick(self) -> None:
-        """ Nothing to do """
         pass
 
     def add_button(self, btn: Button, pos_x: int, pos_y: int) -> None:
@@ -79,3 +81,50 @@ class ButtonPanel(Panel):
         :param pos_y: button y-coordinate
         """
         self._buttons.append((btn, pos_x, pos_y))
+
+
+class SavePanel(Panel):
+    _ENTRY_WIDTH = 16
+    _ENTRY_PATTERN = "^[a-zA-Z0-9 ]{1,16}$"
+    _ENTRY_RULES = "Rules:\n - length 1 to 16;\n - allowed characters: English alphabet letters, digits and whitespace"
+
+    def __init__(self, root: tk.Tk, clock: Clock, width: int, height: int):
+        self.root: tk.Tk = root
+        self.clock: Clock = clock
+        self.width: int = width
+        self.height: int = height
+        self._save_btn: Button = Button(self.root, ini.img('reset'), self._save)
+        self._load_btn: Button = Button(self.root, ini.img('reset'), ButtonAction(self.clock))
+        self._save_input: ttk.Entry = ttk.Entry(self.root, width=self._ENTRY_WIDTH)
+
+        # meglio che lista di stringhe ClockTime, fare Dict nome-valore, con il nome inseribile dall'utente
+        self._saves: Dict[str, str] = {}
+        self._menu: ttk.Combobox = ttk.Combobox(self.root, values=list(self._saves.keys()), width=self._ENTRY_WIDTH)
+
+        self._selection: tk.StringVar = tk.StringVar(self.root)
+
+    def draw(self) -> None:
+        self._load_btn.place(SIDE_PAD, self.height)
+        self._menu.place(x=SIDE_PAD + BTN_SIZE, y=self.height)
+        self._save_btn.place(self.width - SIDE_PAD - BTN_SIZE, self.height)
+        self._save_input.place(x=self.width - SIDE_PAD - BTN_SIZE - 6 * self._ENTRY_WIDTH - SIDE_PAD / 2, y=self.height)
+
+    def tick(self) -> None:
+        self._save_input.delete(0, len(self._save_input.get()))
+
+    def _check_name(self, name: str) -> Optional[str]:
+        if re.match(self._ENTRY_PATTERN, name) is None:
+            return f'"{name}" is invalid.\n{self._ENTRY_RULES}'
+        if name in self._saves:
+            return f'"{name}" already in use'
+        return None
+
+    def _save(self):
+        name = self._save_input.get()
+        err = self._check_name(name)
+        if err is not None:  # err:=self._check_name(name) here?
+            tkinter.messagebox.showinfo(title='Invalid name', message=err)
+        else:
+            self._saves[name] = str(ClockTime(self.clock.day, self.clock.hour, self.clock.minute))
+            self.tick()
+        print(self._saves)

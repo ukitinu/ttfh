@@ -37,8 +37,11 @@ def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Pan
 
     main.add_panel(day, 1, True)
     main.add_panel(period, 2, True)
-    main.add_panel(hour, 3, True)
+    # main.add_panel(hour, 3, True)
     main.add_panel(buttons, 4, False)
+
+    saves = actionpanels.SavePanel(root, clock, width, height - 2 * _BTN_HEIGHT)
+    main.add_panel(saves, 5, False)
 
     return main
 
