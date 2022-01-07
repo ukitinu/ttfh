@@ -132,6 +132,7 @@ class SavePanel(Panel):
 
     def _save(self) -> None:
         """ If the input name is valid, creates a new save with the given name and at the current time """
+        self.clock.un_pause('stop')
         name = self._save_input.get()
         err = self._check_name(name)
         if err is not None:  # err:=self._check_name(name) here?
@@ -145,6 +146,7 @@ class SavePanel(Panel):
         self._menu['values'] = list(self._saves.keys())
 
     def _load(self) -> None:
+        """ Gives the choice to load the selected save, showing the save time. On load, the save is deleted """
         name = self._menu.get()
         if not name:
             return
