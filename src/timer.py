@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import re
 from typing import Dict, List
-from src import music
+
 from src import ini
+from src import music
 
 
 def __get_label(label: str) -> str:
@@ -77,7 +78,6 @@ class Clock:
         """
         if self.day > self.__DAY_MAX:
             self.__set_time(self.__DAY_MAX, (self.START_HOUR - 1) % 24, 0)
-            self.running = False
             self.end = True
         else:
             music.new_day()
@@ -106,6 +106,11 @@ class Clock:
         self.day = day
         self.hour = hour
         self.minute = minute
+        self.running = False
+
+    def set_time(self, time: ClockTime) -> None:
+        """ Sets the time from a ClockTime instance. """
+        self.__set_time(time.day, time.hour, time.minute)
 
     def un_pause(self) -> None:
         """ If it's not the end, it switches the running state of the timer. """
@@ -122,7 +127,6 @@ class Clock:
     def reset(self) -> None:
         """ Resets the timer to its starting value, at non-running state and non-slow speed """
         self.__set_time(self.START_DAY, self.START_HOUR, self.START_MINUTE)
-        self.running = False
         self.end = False
         self.slow = 0
         music.stop()
@@ -136,7 +140,6 @@ class Clock:
             new_hour = (self.hour + 1) % 24
             new_day = self.day + 1 if new_hour == self.START_HOUR else self.day
             self.__set_time(new_day, new_hour, self.START_MINUTE)
-            self.running = False
             self.slow = 0
             music.stop()
 
@@ -152,7 +155,6 @@ class Clock:
             self.__set_time(new_day, new_hour, self.START_MINUTE)
             changed = True
         if changed:
-            self.running = False
             self.slow = 0
             music.stop()
 
