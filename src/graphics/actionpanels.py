@@ -96,8 +96,8 @@ class SavePanel(Panel):
         self.width: int = width
         self.height: int = height
         self.parent: Panel = parent
-        self._save_btn: Button = Button(self.root, ini.img('reset'), self._save)
-        self._load_btn: Button = Button(self.root, ini.img('reset'), self._load)
+        self._save_btn: Button = Button(self.root, ini.img('save'), self._save)
+        self._load_btn: Button = Button(self.root, ini.img('load'), self._load)
         self._save_input: ttk.Entry = ttk.Entry(self.root, width=self._ENTRY_WIDTH)
 
         self._saves: Dict[str, ClockTime] = {}

@@ -53,3 +53,5 @@ run-on=resources/images/run_on.png
 reset=resources/images/reset.png
 fwd=resources/images/forward.png
 bwd=resources/images/backward.png
+save=resources/images/save.png
+load=resources/images/load.png
