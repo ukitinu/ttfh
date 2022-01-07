@@ -4,19 +4,8 @@ import tkinter as tk
 from typing import Callable
 
 from src.graphics import utils
+from src.graphics.interfaces import Panel
 from src.timer import Clock
-
-
-class Panel:
-    """ Interface for objects that can be drawn on the window """
-
-    def draw(self) -> None:
-        """ Draws the panel """
-        pass
-
-    def tick(self) -> None:
-        """ Updates the panel """
-        pass
 
 
 class PanelStyle:

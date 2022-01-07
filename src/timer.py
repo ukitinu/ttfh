@@ -1,7 +1,10 @@
 from __future__ import annotations
-from typing import Dict, List
-from src import music
+
+import re
+from typing import Dict, List, Literal
+
 from src import ini
+from src import music
 
 
 def __get_label(label: str) -> str:
@@ -75,7 +78,6 @@ class Clock:
         """
         if self.day > self.__DAY_MAX:
             self.__set_time(self.__DAY_MAX, (self.START_HOUR - 1) % 24, 0)
-            self.running = False
             self.end = True
         else:
             music.new_day()
@@ -104,11 +106,26 @@ class Clock:
         self.day = day
         self.hour = hour
         self.minute = minute
+        self.running = False
 
-    def un_pause(self) -> None:
-        """ If it's not the end, it switches the running state of the timer. """
+    def set_time(self, time: ClockTime) -> None:
+        """ Sets the time from a ClockTime instance. """
+        self.__set_time(time.day, time.hour, time.minute)
+
+    def un_pause(self, mode: Literal['switch', 'stop', 'run'] = 'switch') -> None:
+        """
+        If it's not the end, changes the running state of the clock as specified.
+        If mode is 'switch', it switches the state.
+
+        :param mode: one of 'switch', 'stop' and 'run'
+        """
         if not self.end:
-            self.running = not self.running
+            if mode == "switch":
+                self.running = not self.running
+            elif mode == "stop":
+                self.running = False
+            else:
+                self.running = True
 
     def cycle_millis(self) -> None:
         """ Cycles between the two states, normal (0) and slow (1). """
@@ -120,7 +137,6 @@ class Clock:
     def reset(self) -> None:
         """ Resets the timer to its starting value, at non-running state and non-slow speed """
         self.__set_time(self.START_DAY, self.START_HOUR, self.START_MINUTE)
-        self.running = False
         self.end = False
         self.slow = 0
         music.stop()
@@ -134,7 +150,6 @@ class Clock:
             new_hour = (self.hour + 1) % 24
             new_day = self.day + 1 if new_hour == self.START_HOUR else self.day
             self.__set_time(new_day, new_hour, self.START_MINUTE)
-            self.running = False
             self.slow = 0
             music.stop()
 
@@ -150,6 +165,33 @@ class Clock:
             self.__set_time(new_day, new_hour, self.START_MINUTE)
             changed = True
         if changed:
-            self.running = False
             self.slow = 0
             music.stop()
+
+
+class ClockTime:
+    _PATTERN = "^[1-3]\\.(?:[01][0-9]|2[0-3])\\.[0-5][0-9]$"
+
+    def __init__(self, day: int, hour: int, minute: int):
+        self.day = day
+        self.hour = hour
+        self.minute = minute
+
+    def __str__(self):
+        return f'Day {self.day}, hour {self.hour}, min {self.minute}'
+
+    def __repr__(self):
+        return f'{self.day}.{self.hour:02}.{self.minute:02}'
+
+    def __eq__(self, other):
+        if not isinstance(other, ClockTime):
+            return False
+        return self.day == other.day and self.hour == other.hour and self.minute == other.minute
+
+    @classmethod
+    def from_str(cls, string: str) -> ClockTime:
+        if re.match(cls._PATTERN, string) is None:
+            raise ValueError("Invalid string")
+
+        values = string.split(".")
+        return ClockTime(int(values[0]), int(values[1]), int(values[2]))
