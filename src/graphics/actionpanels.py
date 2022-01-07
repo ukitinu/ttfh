@@ -149,5 +149,12 @@ class SavePanel(Panel):
         if not name:
             return
         value = self._saves[name]
-        self.clock.set_time(value)
-        self.parent.tick()
+        self.clock.un_pause('stop')
+        choice = tkinter.messagebox.askokcancel(
+            title='Confirm load',
+            message=f'Load the following save?\n{name}\n{value}')
+        if choice:
+            self.clock.set_time(value)
+            self._saves.pop(name, None)
+            self.parent.tick()
+        self._menu.delete(0, len(name))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Dict, List
+from typing import Dict, List, Literal
 
 from src import ini
 from src import music
@@ -112,10 +112,20 @@ class Clock:
         """ Sets the time from a ClockTime instance. """
         self.__set_time(time.day, time.hour, time.minute)
 
-    def un_pause(self) -> None:
-        """ If it's not the end, it switches the running state of the timer. """
+    def un_pause(self, mode: Literal['switch', 'stop', 'run'] = 'switch') -> None:
+        """
+        If it's not the end, changes the running state of the clock as specified.
+        If mode is 'switch', it switches the state.
+
+        :param mode: one of 'switch', 'stop' and 'run'
+        """
         if not self.end:
-            self.running = not self.running
+            if mode == "switch":
+                self.running = not self.running
+            elif mode == "stop":
+                self.running = False
+            else:
+                self.running = True
 
     def cycle_millis(self) -> None:
         """ Cycles between the two states, normal (0) and slow (1). """
@@ -168,10 +178,10 @@ class ClockTime:
         self.minute = minute
 
     def __str__(self):
-        return f'{self.day}.{self.hour:02}.{self.minute:02}'
+        return f'Day {self.day}, hour {self.hour}, min {self.minute}'
 
     def __repr__(self):
-        return f'ClockTime({self.day}, {self.hour}, {self.minute})'
+        return f'{self.day}.{self.hour:02}.{self.minute:02}'
 
     def __eq__(self, other):
         if not isinstance(other, ClockTime):
