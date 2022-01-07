@@ -1,17 +1,18 @@
 from __future__ import annotations
 
 import tkinter as tk
-from typing import Callable, List, Tuple, Union
+from typing import Callable, List, Union, Optional
 
+from src.graphics.interfaces import Tickable
 from src.timer import Clock
 
 
 class ButtonAction:
     def __init__(self,
                  clock: Clock,
-                 start: List[Callable] = None,
-                 middle: List[Tuple[Callable, str]] = None,
-                 end: List[Callable] = None):
+                 start: Optional[List[Callable]] = None,
+                 middle: Optional[List[Callable]] = None,
+                 end: Optional[List[Callable]] = None):
         """
         :param start: callables to execute first
         :param middle: callables and switch's set_on to execute in-between. If the str is None the callable
@@ -26,19 +27,15 @@ class ButtonAction:
             end = []
         self.clock: Clock = clock
         self.start: List[Callable] = start
-        self.middle: List[Tuple[Callable, str]] = middle
+        self.middle: List[Callable] = middle
         self.end: List[Callable] = end
 
     def exec(self) -> None:
         """ Executes the button action """
         for cmd in self.start:
             cmd()
-        for cmd, attr in self.middle:
-            if attr is not None:
-                val = getattr(self.clock, attr)
-                cmd(val)
-            else:
-                cmd()
+        for cmd in self.middle:
+            cmd()
         for cmd in self.end:
             cmd()
 
@@ -77,11 +74,17 @@ class Button:
         return self
 
 
-class Switch(Button):
+class Switch(Button, Tickable):
     _RELIEF_ON = tk.SUNKEN
     _RELIEF_OFF = tk.RAISED
 
-    def __init__(self, root: tk.Tk, icon_off: str, icon_on: str, action: Union[ButtonAction, Callable], **kwargs):
+    def __init__(self,
+                 root: tk.Tk,
+                 icon_off: str,
+                 icon_on: str,
+                 action: Union[ButtonAction, Callable],
+                 track: Callable[[], bool],
+                 **kwargs):
         """
         Creates a switch, a button with two states, represented by two different values of the 'relief' property and
         two different icons.
@@ -90,11 +93,13 @@ class Switch(Button):
         :param icon_off: path to the PNG icon used when the button is off
         :param icon_on: path to the PNG icon used when the button is on
         :param action: action to call on click
+        :param track: function returning a truthy value that tracks the switch's activation state
         :param kwargs: additional arguments for the button's creation
         """
         super().__init__(root, icon_off, action, relief=self._RELIEF_OFF, **kwargs)
         self.icon_on: tk.PhotoImage = tk.PhotoImage(file=icon_on)
-        self.var: tk.BooleanVar = tk.BooleanVar(root, False)
+        self.track: Callable[[], bool] = track
+        self.var: tk.BooleanVar = tk.BooleanVar(root, self.track())
 
     def place(self, pos_x: int, pos_y: int) -> Switch:
         """
@@ -117,10 +122,5 @@ class Switch(Button):
 
         return self
 
-    def set_on(self, active: bool) -> None:
-        """
-        Sets the switch's status, True on, False off.
-
-        :param active: bool of the new status of the switch.
-        """
-        self.var.set(active)
+    def tick(self) -> None:
+        self.var.set(self.track())

@@ -8,7 +8,7 @@ from typing import Tuple, List, Dict, Optional
 
 from src import ini
 from src.graphics.buttons import Button, Switch, ButtonAction
-from src.graphics.panels import Panel
+from src.graphics.interfaces import Panel, Tickable
 from src.timer import Clock, ClockTime
 
 BTN_SIZE = 24
@@ -18,33 +18,33 @@ SIDE_PAD = 16
 def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int) -> Panel:
     nav = ButtonPanel(clock)
 
-    pause_btn = Switch(root, ini.img('run-off'), ini.img('run-on'), None)
+    pause_btn = Switch(root, ini.img('run-off'), ini.img('run-on'), None, lambda: getattr(clock, "running"))
     # the action needs the button, a simple on/off doesn't work as clock.running is changed by a lot of other objects
-    pause_act = ButtonAction(clock, start=[clock.un_pause], middle=[(pause_btn.set_on, "running")])
+    pause_act = ButtonAction(clock, start=[clock.un_pause], middle=[pause_btn.tick])
     pause_btn.action = pause_act
 
-    slow_btn = Switch(root, ini.img('slow-off'), ini.img('slow-on'), None)
-    slow_act = ButtonAction(clock, start=[clock.cycle_millis], middle=[(slow_btn.set_on, "slow")])
+    slow_btn = Switch(root, ini.img('slow-off'), ini.img('slow-on'), None, lambda: getattr(clock, "slow"))
+    slow_act = ButtonAction(clock, start=[clock.cycle_millis], middle=[slow_btn.tick])
     slow_btn.action = slow_act
 
     forward_act = ButtonAction(
         clock,
         start=[clock.forward],
-        middle=[(pause_btn.set_on, "running"), (slow_btn.set_on, "slow")],
+        middle=[pause_btn.tick, slow_btn.tick],
         end=[parent.tick])
     forward_btn = Button(root, ini.img('fwd'), forward_act)
 
     backward_act = ButtonAction(
         clock,
         start=[clock.backward],
-        middle=[(pause_btn.set_on, "running"), (slow_btn.set_on, "slow")],
+        middle=[pause_btn.tick, slow_btn.tick],
         end=[parent.tick])
     backward_btn = Button(root, ini.img('bwd'), backward_act)
 
     reset_act = ButtonAction(
         clock,
         start=[clock.reset],
-        middle=[(pause_btn.set_on, "running"), (slow_btn.set_on, "slow")],
+        middle=[pause_btn.tick, slow_btn.tick],
         end=[parent.tick])
     reset_btn = Button(root, ini.img('reset'), reset_act)
 
@@ -72,7 +72,9 @@ class ButtonPanel(Panel):
             btn.place(pos_x, pos_y)
 
     def tick(self) -> None:
-        pass
+        for btn, _, _ in self._buttons:
+            if isinstance(btn, Tickable):
+                btn.tick()
 
     def add_button(self, btn: Button, pos_x: int, pos_y: int) -> None:
         """

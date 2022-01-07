@@ -5,7 +5,7 @@ import tkinter as tk
 
 from src import ini
 from src.graphics import mainpanels
-from src.graphics.panels import Panel
+from src.graphics.interfaces import Panel
 from src.timer import Clock
 
 
