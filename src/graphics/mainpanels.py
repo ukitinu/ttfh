@@ -13,6 +13,7 @@ _BG_COLOUR = '#000000'
 _DAY_HEIGHT = 64
 _PERIOD_HEIGHT = 32
 _BTN_HEIGHT = 48
+_SAVE_HEIGHT = 40
 
 
 def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Panel:
@@ -27,20 +28,21 @@ def create_main_panel(root: tk.Tk, clock: Clock, width: int, height: int) -> Pan
     """
     main = PanelHolder(width, height)
 
+    # from the top
     day = TextPanel(root, clock, PanelStyle(width, _DAY_HEIGHT, _BG_COLOUR, 'Arial 24 bold'), timer.get_day)
     period = TextPanel(root, clock, PanelStyle(width, _PERIOD_HEIGHT, _BG_COLOUR, 'Arial 18 bold'), timer.get_period)
 
-    hour_height = height - _DAY_HEIGHT - _PERIOD_HEIGHT - _BTN_HEIGHT
+    hour_height = height - _DAY_HEIGHT - _PERIOD_HEIGHT - _BTN_HEIGHT - _SAVE_HEIGHT
     hour = ClockPanel(root, clock, PanelStyle(width, hour_height, _BG_COLOUR, 'Arial 64'), timer.get_time)
 
-    buttons = actionpanels.create_nav_panel(root, clock, main, width, height - _BTN_HEIGHT)
+    # from the bottom
+    saves = actionpanels.SavePanel(root, clock, width, height - _SAVE_HEIGHT)
+    buttons = actionpanels.create_nav_panel(root, clock, main, width, height - _SAVE_HEIGHT - _BTN_HEIGHT)
 
     main.add_panel(day, 1, True)
     main.add_panel(period, 2, True)
-    # main.add_panel(hour, 3, True)
+    main.add_panel(hour, 3, True)
     main.add_panel(buttons, 4, False)
-
-    saves = actionpanels.SavePanel(root, clock, width, height - 2 * _BTN_HEIGHT)
     main.add_panel(saves, 5, False)
 
     return main
