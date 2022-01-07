@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import tkinter as tk
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, Union
 
 from src.timer import Clock
 
@@ -46,7 +46,7 @@ class ButtonAction:
 class Button:
     _RELIEF = tk.GROOVE
 
-    def __init__(self, root: tk.Tk, icon_path: str, action: ButtonAction, **kwargs):
+    def __init__(self, root: tk.Tk, icon_path: str, action: Union[ButtonAction, Callable], **kwargs):
         """
         :param root: root Tk of the button
         :param icon_path: path to the PNG icon
@@ -55,7 +55,7 @@ class Button:
         """
         self.root: tk.Tk = root
         self.icon: tk.PhotoImage = tk.PhotoImage(file=icon_path)
-        self.action: ButtonAction = action
+        self.action: Union[ButtonAction, Callable] = action
         self.style_args = kwargs
         self._btn: tk.Button = None
 
@@ -69,7 +69,10 @@ class Button:
         if 'relief' not in self.style_args:
             self.style_args['relief'] = self._RELIEF
 
-        self._btn = tk.Button(self.root, image=self.icon, command=self.action.exec, **self.style_args)
+        self._btn = tk.Button(self.root,
+                              image=self.icon,
+                              command=self.action.exec if isinstance(self.action, ButtonAction) else self.action,
+                              **self.style_args)
         self._btn.place(x=pos_x, y=pos_y)
         return self
 
@@ -78,7 +81,7 @@ class Switch(Button):
     _RELIEF_ON = tk.SUNKEN
     _RELIEF_OFF = tk.RAISED
 
-    def __init__(self, root: tk.Tk, icon_off: str, icon_on: str, action: ButtonAction, **kwargs):
+    def __init__(self, root: tk.Tk, icon_off: str, icon_on: str, action: Union[ButtonAction, Callable], **kwargs):
         """
         Creates a switch, a button with two states, represented by two different values of the 'relief' property and
         two different icons.
