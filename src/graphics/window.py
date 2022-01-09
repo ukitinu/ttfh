@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 import tkinter as tk
 
-from src import ini
+from src import ini, saves
 from src.graphics import mainpanels
 from src.graphics.interfaces import Panel
 from src.timer import Clock
@@ -19,10 +19,13 @@ class Window:
     _POS_X = int(ini.gui("pos-x"))
     _POS_Y = int(ini.gui("pos-y"))
 
-    def __init__(self, clock: Clock):
+    def __init__(self, clock: Clock, save_string: str):
         self.window = tk.Tk()
         self.window.wm_protocol("WM_DELETE_WINDOW", self._on_delete)
+
         self.clock = clock
+        saves.deserialize(save_string)
+
         self.panel: Panel = mainpanels.create_main_panel(self.window, self.clock, self._WIDTH, self._HEIGHT)
 
     def _on_delete(self) -> None:
@@ -38,8 +41,14 @@ class Window:
         Creates the 'continue' file.
         """
         save_time = f'--day {self.clock.day} --hour {self.clock.hour} --minute {self.clock.minute}'
+        content = f'{ini.sys("entrypoint")} {save_time}'
+
+        save_list = saves.serialize()
+        if save_list:
+            content += f' --saves="{save_list}"'
+
         with open('continue', 'w', encoding='utf-8') as batch_file:
-            batch_file.write(f'{ini.sys("entrypoint")} {save_time}\n')
+            batch_file.write(f'{content}\n')
 
     def _tick(self):
         self.panel.tick()
