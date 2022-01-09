@@ -3,7 +3,7 @@ from os.path import exists
 from src import ini
 
 
-class SetupData:
+class MakeScriptData:
     def __init__(self, py_start: str, entry_start: str):
         self.py_start = py_start
         self.entry_start = entry_start
@@ -15,11 +15,11 @@ class SetupData:
         return f'{self.entry_start}"{entry_name}"\n'
 
 
-SH_DATA: SetupData = SetupData('PYTHON_CMD=', 'ENTRYPOINT=')
-VBS_DATA: SetupData = SetupData('pythonCmd = ', 'entrypoint = ')
+_SH = MakeScriptData('PYTHON_CMD=', 'ENTRYPOINT=')
+_VBS = MakeScriptData('pythonCmd = ', 'entrypoint = ')
 
 
-def __setup_script(file_key: str, file_data: SetupData) -> None:
+def _make_script(file_key: str, file_data: Dict[str, str]) -> None:
     py_cmd = ini.sys('python3')
     entry = ini.sys('entrypoint')
 
@@ -41,16 +41,16 @@ def __setup_script(file_key: str, file_data: SetupData) -> None:
             script.write(line)
 
 
-def setup_sh() -> None:
+def make_sh() -> None:
     """ Updates the run.sh file with the settings from the .ini file. """
-    __setup_script('run-sh', SH_DATA)
+    _make_script('run-sh', _SH)
 
 
-def setup_vbs() -> None:
+def make_vbs() -> None:
     """ Updates the run.vbs file with the settings from the .ini file. """
-    __setup_script('run-vbs', VBS_DATA)
+    _make_script('run-vbs', _VBS)
 
 
 if __name__ == '__main__':
-    setup_sh()
-    setup_vbs()
+    make_sh()
+    make_vbs()
