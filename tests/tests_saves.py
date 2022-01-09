@@ -64,17 +64,17 @@ class SavesTest(unittest.TestCase):
 
     def test_from_str_error(self):
         with self.assertRaises(ValueError):
-            SaveState.from_str('nameonly')
+            SaveState.from_str('nameonly')  # no time
         with self.assertRaises(ValueError):
-            SaveState.from_str('1.10.30')
+            SaveState.from_str('1.10.30')  # no name
         with self.assertRaises(ValueError):
-            SaveState.from_str('symbols?@2.10.45')
+            SaveState.from_str('symbols?@2.10.45')  # invalid name
         with self.assertRaises(ValueError):
-            SaveState.from_str('two@names@1.03.15')
+            SaveState.from_str('two@names@1.03.15')  # two @
         with self.assertRaises(ValueError):
-            SaveState.from_str('My name@2.24.41')
+            SaveState.from_str('My name@2.24.41')  # hour is 24
         with self.assertRaises(ValueError):
-            SaveState.from_str('My name@3.19.60')
+            SaveState.from_str('My name@3.19.60')  # min is 60
 
     def test_from_str_all_values(self):
         for d in range(1, 4):

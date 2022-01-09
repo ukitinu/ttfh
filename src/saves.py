@@ -64,8 +64,9 @@ def deserialize(string: str) -> None:
     """
     values = string.split(',')
     for value in values:
-        save = SaveState.from_str(value)
-        _SAVES[save.name] = save
+        if value:
+            save = SaveState.from_str(value)
+            _SAVES[save.name] = save
 
 
 class SaveState:
