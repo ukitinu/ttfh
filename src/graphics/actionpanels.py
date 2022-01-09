@@ -137,9 +137,9 @@ class SavePanel(Panel):
     def _load(self) -> None:
         """ Gives the choice to load the selected save, showing the save time. On load, the save is deleted """
         name = self._menu.get()
-        if not name:
-            return
         save = saves.get(name)
+        if save is None:
+            return
         self.clock.un_pause('stop')
         choice = tkinter.messagebox.askokcancel(
             title='Confirm load',

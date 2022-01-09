@@ -36,10 +36,23 @@ def delete(name: str) -> None:
     _SAVES.pop(name, None)
 
 
+def serialize() -> str:
+    save_list = [repr(save) for save in _SAVES.values()]
+    return ','.join(save_list)
+
+
+def deserialize(string: str) -> None:
+    values = string.split(',')
+    for value in values:
+        save = SaveState.from_str(value)
+        _SAVES[save.name] = save
+
+
 class SaveState:
     _NAME_LEN = 16
     _NAME_PAT = "[a-zA-Z0-9 ]{1," + str(_NAME_LEN) + "}"
-    _PATTERN = "^[1-3]\\.(?:[01][0-9]|2[0-3])\\.[0-5][0-9]$"
+    _TIME_PAT = "[1-3]\\.(?:[01][0-9]|2[0-3])\\.[0-5][0-9]"
+    _PATTERN = "^" + _NAME_PAT + "@" + _TIME_PAT + "$"
     NAME_RULES = "Rules:\n - length 1 to 16;\n - allowed characters: English alphabet letters, digits and whitespace"
 
     def __init__(self, name: str, day: int, hour: int, minute: int):
@@ -69,3 +82,11 @@ class SaveState:
     @staticmethod
     def is_time_valid(day: int, hour: int, minute: int):
         return 1 <= day <= 3 and 0 <= hour <= 23 and 0 <= minute <= 59
+
+    @classmethod
+    def from_str(cls, string: str) -> SaveState:
+        if re.match(cls._PATTERN, string) is None:
+            raise ValueError("Invalid value: " + string)
+        name, time = string.split('@')
+        day, hour, minute = time.split('.')
+        return SaveState(name, int(day), int(hour), int(minute))
