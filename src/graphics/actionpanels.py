@@ -5,7 +5,7 @@ import tkinter.messagebox
 from tkinter import ttk
 from typing import Tuple, List
 
-from src import ini, saves
+from src import ini, saves, music
 from src.graphics.buttons import Button, Switch, ButtonAction
 from src.graphics.interfaces import Panel, Tickable
 from src.timer import Clock
@@ -146,6 +146,7 @@ class SavePanel(Panel):
             message=f'Load the following save?\n{save.name}\n{save.get_time_str()}')
         if choice:
             self.clock.set_time(save.day, save.hour, save.minute)
+            music.stop()
             saves.delete(name)
         self.parent.tick()
         self._menu.delete(0, len(name))
