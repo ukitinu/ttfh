@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-import re
 import tkinter as tk
 import tkinter.messagebox
 from tkinter import ttk
-from typing import Tuple, List, Dict, Optional
+from typing import Tuple, List
 
-from src import ini
+from src import ini, saves
 from src.graphics.buttons import Button, Switch, ButtonAction
 from src.graphics.interfaces import Panel, Tickable
-from src.timer import Clock, ClockTime
+from src.timer import Clock
 
 BTN_SIZE = 24
 SIDE_PAD = 16
@@ -104,9 +103,8 @@ class SavePanel(Panel):
         self._load_btn: Button = Button(self.root, ini.img('load'), self._load)
         self._save_input: ttk.Entry = ttk.Entry(self.root, width=self._ENTRY_WIDTH)
 
-        self._saves: Dict[str, ClockTime] = {}
         self._menu: ttk.Combobox = ttk.Combobox(self.root,
-                                                values=list(self._saves.keys()),
+                                                values=saves.get_list(),
                                                 width=self._ENTRY_WIDTH,
                                                 # postcommand runs upon drop down
                                                 postcommand=self._update_saves)
@@ -121,46 +119,33 @@ class SavePanel(Panel):
     def tick(self) -> None:
         pass
 
-    def _check_name(self, name: str) -> Optional[str]:
-        """
-        Checks whether the given string can be used as name for a save.
-        It must match the defined pattern, and it must be unique.
-        :param name: string to check
-        :return: None if the string is valid, an error message otherwise
-        """
-        if re.match(self._ENTRY_PATTERN, name) is None:
-            return f'"{name}" is invalid.\n{self._ENTRY_RULES}'
-        if name in self._saves:
-            return f'"{name}" already in use'
-        return None
-
     def _save(self) -> None:
         """ If the input name is valid, creates a new save with the given name and at the current time """
         self.clock.un_pause('stop')
+        self.parent.tick()
         name = self._save_input.get()
-        err = self._check_name(name)
-        if err is not None:  # err:=self._check_name(name) here?
-            tkinter.messagebox.showinfo(title='Invalid name', message=err)
-        else:
-            self._saves[name] = ClockTime(self.clock.day, self.clock.hour, self.clock.minute)
+        try:
+            saves.create(name, self.clock.day, self.clock.hour, self.clock.minute)
             self._save_input.delete(0, len(self._save_input.get()))
+        except ValueError as e:
+            tkinter.messagebox.showinfo(title='Save error', message=str(e))
 
     def _update_saves(self) -> None:
         """ Updates the list of savestates """
-        self._menu['values'] = list(self._saves.keys())
+        self._menu['values'] = saves.get_list()
 
     def _load(self) -> None:
         """ Gives the choice to load the selected save, showing the save time. On load, the save is deleted """
         name = self._menu.get()
         if not name:
             return
-        value = self._saves[name]
+        save = saves.get(name)
         self.clock.un_pause('stop')
         choice = tkinter.messagebox.askokcancel(
             title='Confirm load',
-            message=f'Load the following save?\n{name}\n{value}')
+            message=f'Load the following save?\n{save.name}\n{save.get_time_str()}')
         if choice:
-            self.clock.set_time(value)
-            self._saves.pop(name, None)
-            self.parent.tick()
+            self.clock.set_time(save.day, save.hour, save.minute)
+            saves.delete(name)
+        self.parent.tick()
         self._menu.delete(0, len(name))
