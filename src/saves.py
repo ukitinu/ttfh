@@ -25,23 +25,43 @@ def create(name: str, day: int, hour: int, minute: int) -> None:
 
 
 def get_list() -> List[str]:
+    """
+    :return: returns a list with all the saves' names
+    """
     return list(_SAVES.keys())
 
 
 def get(name: str) -> Optional[SaveState]:
+    """
+    :param name: name of the save
+    :return: save with the given name, or None
+    """
     return _SAVES.get(name, None)
 
 
 def delete(name: str) -> None:
+    """
+    Deletes the save with the given name
+    :param name: name of the save to delete
+    """
     _SAVES.pop(name, None)
 
 
 def serialize() -> str:
+    """
+    Converts the saves to a comma-separated string, that can be later deserialised
+    :return: string representing all the saves in memory
+    """
     save_list = [repr(save) for save in _SAVES.values()]
     return ','.join(save_list)
 
 
 def deserialize(string: str) -> None:
+    """
+    Deserialise the given string, storing the values in memory.
+    It expects a string of comma-separated repr(SaveState), for example the one returned by the serialize() method.
+    :param string: string to deserialise
+    """
     values = string.split(',')
     for value in values:
         save = SaveState.from_str(value)
@@ -49,8 +69,8 @@ def deserialize(string: str) -> None:
 
 
 class SaveState:
-    _NAME_LEN = 16
-    _NAME_PAT = "[a-zA-Z0-9 ]{1," + str(_NAME_LEN) + "}"
+    NAME_LEN = 16
+    _NAME_PAT = "[a-zA-Z0-9 ]{1," + str(NAME_LEN) + "}"
     _TIME_PAT = "[1-3]\\.(?:[01][0-9]|2[0-3])\\.[0-5][0-9]"
     _PATTERN = "^" + _NAME_PAT + "@" + _TIME_PAT + "$"
     NAME_RULES = "Rules:\n - length 1 to 16;\n - allowed characters: English alphabet letters, digits and whitespace"
@@ -62,7 +82,7 @@ class SaveState:
         self.minute: int = minute
 
     def __str__(self):
-        return f'"{self.name}", day {self.day} at {self.hour}:{self.minute}'
+        return f'"{self.name}", day {self.day} at {self.hour:02}:{self.minute:02}'
 
     def __repr__(self):
         return f'{self.name}@{self.day}.{self.hour:02}.{self.minute:02}'
@@ -73,18 +93,32 @@ class SaveState:
         return self.name == other.name
 
     def get_time_str(self) -> str:
+        """
+        :return: a string with a description of the time of the save
+        """
         return f'Day {self.day}, hour {self.hour}, min {self.minute}'
 
     @classmethod
     def is_name_valid(cls, name: str) -> bool:
+        """
+        :return True if the given name is valid, False otherwise
+        """
         return re.match("^" + cls._NAME_PAT + "$", name) is not None
 
     @staticmethod
-    def is_time_valid(day: int, hour: int, minute: int):
+    def is_time_valid(day: int, hour: int, minute: int) -> bool:
+        """
+        :return True if the given time is valid, False otherwise
+        """
         return 1 <= day <= 3 and 0 <= hour <= 23 and 0 <= minute <= 59
 
     @classmethod
     def from_str(cls, string: str) -> SaveState:
+        """
+        Converts back a repr(SaveState)
+        :param string: string to convert
+        :return: SaveState with the given name and time
+        """
         if re.match(cls._PATTERN, string) is None:
             raise ValueError("Invalid value: " + string)
         name, time = string.split('@')
