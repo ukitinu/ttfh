@@ -1,22 +1,24 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 
 from src.graphics.window import Window
 from src.timer import Clock
+
+log = logging.getLogger(__name__)
 
 
 def main(day: int, hour: int, minute: int, saves: str):
     """
     If the parameters are valid, it starts the clock.
     """
-    if 1 <= args.day <= 3 and 0 <= args.hour <= 23 and 0 <= args.minute <= 59:
+    if 1 <= day <= 3 and 0 <= hour <= 23 and 0 <= minute <= 59:
         timer = Clock(day, hour, minute)
         window = Window(timer, saves)
         window.draw()
     else:
-        print('Starting time out of bounds')
         sys.exit(1)
 
 
