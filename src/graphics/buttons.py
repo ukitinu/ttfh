@@ -77,6 +77,7 @@ class Switch(Button, Tickable):
         """
         Creates a switch, a button with two states, represented by two different values of the 'relief' property and
         two different icons.
+        Appends self.tick to the list of callables.
 
         :param root: root Tk of the switch
         :param icon_off: path to the PNG icon used when the button is off
@@ -85,6 +86,7 @@ class Switch(Button, Tickable):
         :param track: function returning a truthy value that tracks the switch's activation state
         :param kwargs: additional arguments for the button's creation
         """
+        action.append(self.tick)
         super().__init__(root, icon_off, action, relief=self._RELIEF_OFF, **kwargs)
         self.icon_on: tk.PhotoImage = tk.PhotoImage(file=icon_on)
         self.track: Callable[[], bool] = track

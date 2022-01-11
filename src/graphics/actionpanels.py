@@ -7,7 +7,7 @@ from tkinter import ttk
 from typing import Tuple, List
 
 from src import ini, saves, music
-from src.graphics.buttons import Button, Switch, ButtonAction
+from src.graphics.buttons import Button, Switch
 from src.graphics.interfaces import Panel, Tickable
 from src.timer import Clock
 
@@ -20,35 +20,17 @@ LOG = logging.getLogger(__name__)
 def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int) -> Panel:
     nav = ButtonPanel(clock)
 
-    pause_btn = Switch(root, ini.img('run-off'), ini.img('run-on'), None, lambda: getattr(clock, "running"))
+    pause_btn = Switch(root, ini.img('run-off'), ini.img('run-on'), [clock.un_pause], lambda: getattr(clock, "running"))
     # the action needs the button, a simple on/off doesn't work as clock.running is changed by a lot of other objects
-    pause_act = ButtonAction(clock, start=[clock.un_pause], middle=[pause_btn.tick])
-    pause_btn.action = pause_act
 
-    slow_btn = Switch(root, ini.img('slow-off'), ini.img('slow-on'), None, lambda: getattr(clock, "slow"))
-    slow_act = ButtonAction(clock, start=[clock.cycle_millis], middle=[slow_btn.tick])
-    slow_btn.action = slow_act
+    slow_btn = Switch(root, ini.img('slow-off'), ini.img('slow-on'), [clock.cycle_millis],
+                      lambda: getattr(clock, "slow"))
 
-    forward_act = ButtonAction(
-        clock,
-        start=[clock.forward],
-        middle=[pause_btn.tick, slow_btn.tick],
-        end=[parent.tick])
-    forward_btn = Button(root, ini.img('fwd'), forward_act)
+    forward_btn = Button(root, ini.img('fwd'), [clock.forward, pause_btn.tick, slow_btn.tick, parent.tick])
 
-    backward_act = ButtonAction(
-        clock,
-        start=[clock.backward],
-        middle=[pause_btn.tick, slow_btn.tick],
-        end=[parent.tick])
-    backward_btn = Button(root, ini.img('bwd'), backward_act)
+    backward_btn = Button(root, ini.img('bwd'), [clock.backward, pause_btn.tick, slow_btn.tick, parent.tick])
 
-    reset_act = ButtonAction(
-        clock,
-        start=[clock.reset],
-        middle=[pause_btn.tick, slow_btn.tick],
-        end=[parent.tick])
-    reset_btn = Button(root, ini.img('reset'), reset_act)
+    reset_btn = Button(root, ini.img('reset'), [clock.reset, pause_btn.tick, slow_btn.tick, parent.tick])
 
     nav.add_button(slow_btn, SIDE_PAD, height)
     nav.add_button(pause_btn, SIDE_PAD + BTN_SIZE + SIDE_PAD, height)
@@ -102,8 +84,8 @@ class SavePanel(Panel):
         self.parent: Panel = parent
         self.width: int = width
         self.height: int = height
-        self._save_btn: Button = Button(self.root, ini.img('save'), self._save)
-        self._load_btn: Button = Button(self.root, ini.img('load'), self._load)
+        self._save_btn: Button = Button(self.root, ini.img('save'), [self._save])
+        self._load_btn: Button = Button(self.root, ini.img('load'), [self._load])
         self._save_input: ttk.Entry = ttk.Entry(self.root, width=self._ENTRY_WIDTH)
 
         self._menu: ttk.Combobox = ttk.Combobox(self.root,
