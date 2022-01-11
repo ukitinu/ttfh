@@ -12,11 +12,11 @@ INI_FILE = os.path.join(os.path.dirname(__file__), 'ttfh.ini')
 
 # logging
 
-if not os.path.exists('./logs'):
-    os.mkdir('./logs')
+if not os.path.exists(ROOT_DIR + '/logs'):
+    os.mkdir(ROOT_DIR + '/logs')
 
 file_handler = logging.handlers.RotatingFileHandler(
-    filename='./logs/ttfh.log',
+    filename=ROOT_DIR + '/logs/ttfh.log',
     maxBytes=1024 * 1000 * 4,
     backupCount=10,
     encoding='UTF-8')
