@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import logging
 import re
 from typing import List, Optional, Dict
+
+LOG = logging.getLogger(__name__)
 
 NAME_RULES = "Rules:\n - length 1 to 16;\n - allowed characters: English alphabet letters, digits and whitespace"
 
@@ -67,10 +70,15 @@ def deserialize(string: str) -> None:
     :param string: string to deserialise
     """
     values = string.split(',')
+    LOG.debug('Found %d potential savestates', len(values))
     for value in values:
         if value:
-            save = SaveState.from_str(value)
-            _SAVES[save.name] = save
+            try:
+                save = SaveState.from_str(value)
+                _SAVES[save.name] = save
+                LOG.debug('Restored savestate %s', str(save))
+            except ValueError as e:
+                LOG.error('Invalid savestate string "%s"', value)
 
 
 class SaveState:

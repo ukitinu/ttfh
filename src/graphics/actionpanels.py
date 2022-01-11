@@ -110,7 +110,7 @@ class SavePanel(Panel):
         self.clock.un_pause('stop')
         self.parent.tick()
         name = self._save_input.get()
-        LOG.info('Trying to save with name "%s" at time %s', name, self.clock.get_time_str())
+        LOG.debug('Trying to save with name "%s" at time %s', name, self.clock.get_time_str())
         try:
             save = saves.create(name, self.clock.day, self.clock.hour, self.clock.minute)
             LOG.info('Saved "%s"', repr(save))
