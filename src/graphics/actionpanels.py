@@ -31,7 +31,19 @@ def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, heigh
 
     backward_btn = Button(root, ini.img('bwd'), 'BWD', [clock.backward, pause_btn.tick, slow_btn.tick, parent.tick])
 
-    reset_btn = Button(root, ini.img('reset'), 'RESET', [clock.reset, pause_btn.tick, slow_btn.tick, parent.tick])
+    def reset() -> None:
+        clock.un_pause('stop')
+        choice = tkinter.messagebox.askokcancel(
+            title="Reset clock",
+            message=f'Time will start over and the saves will be deleted')
+        if choice:
+            clock.reset()
+            pause_btn.tick()
+            slow_btn.tick()
+            saves.clear()
+        parent.tick()
+
+    reset_btn = Button(root, ini.img('reset'), 'RESET', [reset])
 
     nav.add_button(slow_btn, SIDE_PAD, height)
     nav.add_button(pause_btn, SIDE_PAD + BTN_SIZE + SIDE_PAD, height)
