@@ -25,25 +25,26 @@ class ButtonAction:
 class Button:
     _RELIEF = tk.GROOVE
 
-    def __init__(self, root: tk.Tk, icon_path: str, action: List[Callable], **kwargs):
+    def __init__(self, root: tk.Tk, icon_path: str, name: str, action: List[Callable], **kwargs):
         """
         :param root: root Tk of the button
         :param icon_path: path to the PNG icon
+        :param name: button name
         :param action: ordered list of callables to call on click
         :param kwargs: additional arguments for the button's creation
         """
         action.append(lambda: LOG.info('Clicked on %s', str(self)))
 
         self.root: tk.Tk = root
-        self.icon_path: str = icon_path
-        self.icon: tk.PhotoImage = tk.PhotoImage(file=self.icon_path)
+        self.name: str = name
+        self.icon: tk.PhotoImage = tk.PhotoImage(file=icon_path)
         self.action: ButtonAction = ButtonAction(action)
         self.style_args = kwargs
         self._btn: tk.Button = None
 
     def __str__(self):
-        """ Uses the icon path to identify the button, override as needed. """
-        return f'button::{self.icon_path}'
+        """ Uses the name to identify the button, override as needed. """
+        return f'button::{self.name}'
 
     def place(self, pos_x: int, pos_y: int) -> Button:
         """
@@ -71,6 +72,7 @@ class Switch(Button, Tickable):
                  root: tk.Tk,
                  icon_off: str,
                  icon_on: str,
+                 name: str,
                  action: List[Callable],
                  track: Callable[[], bool],
                  **kwargs):
@@ -82,19 +84,20 @@ class Switch(Button, Tickable):
         :param root: root Tk of the switch
         :param icon_off: path to the PNG icon used when the button is off
         :param icon_on: path to the PNG icon used when the button is on
+        :param name: switch name
         :param action: ordered list of callables to call on click
         :param track: function returning a truthy value that tracks the switch's activation state
         :param kwargs: additional arguments for the button's creation
         """
         action.append(self.tick)
-        super().__init__(root, icon_off, action, relief=self._RELIEF_OFF, **kwargs)
+        super().__init__(root, icon_off, name, action, relief=self._RELIEF_OFF, **kwargs)
         self.icon_on: tk.PhotoImage = tk.PhotoImage(file=icon_on)
         self.track: Callable[[], bool] = track
         self.var: tk.BooleanVar = tk.BooleanVar(root, self.track())
 
     def __str__(self):
         """ Logs both id and state """
-        return f'switch::{self.icon_path}::' + ('ON' if self.var.get() else 'OFF')
+        return f'switch::{self.name}::' + ('ON' if self.var.get() else 'OFF')
 
     def place(self, pos_x: int, pos_y: int) -> Switch:
         """

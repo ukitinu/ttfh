@@ -20,17 +20,18 @@ LOG = logging.getLogger(__name__)
 def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int) -> Panel:
     nav = ButtonPanel(clock)
 
-    pause_btn = Switch(root, ini.img('run-off'), ini.img('run-on'), [clock.un_pause], lambda: getattr(clock, "running"))
+    pause_btn = Switch(root, ini.img('run-off'), ini.img('run-on'), 'RUN',
+                       [clock.un_pause], lambda: getattr(clock, "running"))
     # the action needs the button, a simple on/off doesn't work as clock.running is changed by a lot of other objects
 
-    slow_btn = Switch(root, ini.img('slow-off'), ini.img('slow-on'), [clock.cycle_millis],
-                      lambda: getattr(clock, "slow"))
+    slow_btn = Switch(root, ini.img('slow-off'), ini.img('slow-on'), 'SLOWER',
+                      [clock.cycle_millis], lambda: getattr(clock, "slow"))
 
-    forward_btn = Button(root, ini.img('fwd'), [clock.forward, pause_btn.tick, slow_btn.tick, parent.tick])
+    forward_btn = Button(root, ini.img('fwd'), 'FWD', [clock.forward, pause_btn.tick, slow_btn.tick, parent.tick])
 
-    backward_btn = Button(root, ini.img('bwd'), [clock.backward, pause_btn.tick, slow_btn.tick, parent.tick])
+    backward_btn = Button(root, ini.img('bwd'), 'BWD', [clock.backward, pause_btn.tick, slow_btn.tick, parent.tick])
 
-    reset_btn = Button(root, ini.img('reset'), [clock.reset, pause_btn.tick, slow_btn.tick, parent.tick])
+    reset_btn = Button(root, ini.img('reset'), 'RESET', [clock.reset, pause_btn.tick, slow_btn.tick, parent.tick])
 
     nav.add_button(slow_btn, SIDE_PAD, height)
     nav.add_button(pause_btn, SIDE_PAD + BTN_SIZE + SIDE_PAD, height)
@@ -84,8 +85,8 @@ class SavePanel(Panel):
         self.parent: Panel = parent
         self.width: int = width
         self.height: int = height
-        self._save_btn: Button = Button(self.root, ini.img('save'), [self._save])
-        self._load_btn: Button = Button(self.root, ini.img('load'), [self._load])
+        self._save_btn: Button = Button(self.root, ini.img('save'), 'SAVE', [self._save])
+        self._load_btn: Button = Button(self.root, ini.img('load'), 'LOAD', [self._load])
         self._save_input: ttk.Entry = ttk.Entry(self.root, width=self._ENTRY_WIDTH)
 
         self._menu: ttk.Combobox = ttk.Combobox(self.root,
