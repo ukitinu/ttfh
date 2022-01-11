@@ -31,7 +31,19 @@ def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, heigh
 
     backward_btn = Button(root, ini.img('bwd'), 'BWD', [clock.backward, pause_btn.tick, slow_btn.tick, parent.tick])
 
-    reset_btn = Button(root, ini.img('reset'), 'RESET', [clock.reset, pause_btn.tick, slow_btn.tick, parent.tick])
+    def reset() -> None:
+        clock.un_pause('stop')
+        choice = tkinter.messagebox.askokcancel(
+            title="Reset clock",
+            message=f'Time will start over and the saves will be deleted')
+        if choice:
+            clock.reset()
+            pause_btn.tick()
+            slow_btn.tick()
+            saves.clear()
+        parent.tick()
+
+    reset_btn = Button(root, ini.img('reset'), 'RESET', [reset])
 
     nav.add_button(slow_btn, SIDE_PAD, height)
     nav.add_button(pause_btn, SIDE_PAD + BTN_SIZE + SIDE_PAD, height)
@@ -86,6 +98,7 @@ class SavePanel(Panel):
         self.width: int = width
         self.height: int = height
         self._save_btn: Button = Button(self.root, ini.img('save'), 'SAVE', [self._save])
+        self._delete_btn: Button = Button(self.root, ini.img('delete'), 'DELETE', [self._delete])
         self._load_btn: Button = Button(self.root, ini.img('load'), 'LOAD', [self._load])
         self._save_input: ttk.Entry = ttk.Entry(self.root, width=self._ENTRY_WIDTH)
 
@@ -96,9 +109,11 @@ class SavePanel(Panel):
                                                 postcommand=self._update_saves)
 
     def draw(self) -> None:
-        """ On the left side, the list of files and the load button, on the right the input form and the save button """
-        self._load_btn.place(SIDE_PAD, self.height)
-        self._menu.place(x=SIDE_PAD + BTN_SIZE, y=self.height)
+        # from left to right: delete, load, drop-down list
+        self._delete_btn.place(SIDE_PAD, self.height)
+        self._load_btn.place(SIDE_PAD + BTN_SIZE, self.height)
+        self._menu.place(x=SIDE_PAD + 2 * BTN_SIZE, y=self.height)
+        # from right to left: save, input field
         self._save_btn.place(self.width - SIDE_PAD - BTN_SIZE, self.height)
         self._save_input.place(x=self.width - SIDE_PAD - BTN_SIZE - 6 * self._ENTRY_WIDTH - SIDE_PAD / 2, y=self.height)
 
@@ -125,18 +140,34 @@ class SavePanel(Panel):
 
     def _load(self) -> None:
         """ Gives the choice to load the selected save, showing the save time. On load, the save is deleted """
+        self._select_and_exec('Load save', 'Load the following save?', 'Loaded save "%s"', True)
+
+    def _delete(self) -> None:
+        """ Gives the choice to delete the selected save, showing the save time. """
+        self._select_and_exec('Delete save', 'Delete the following save?', 'Deleted save "%s"', False)
+
+    def _select_and_exec(self, title: str, msg: str, log_msg: str, is_load: bool) -> None:
+        """
+        If the name selected in the menu corresponds to a savestate, shows a pop-up with a choice (load/delete).
+
+        :param title: pop-up title
+        :param msg: pop-up message preceding the savestate's details
+        :param log_msg: log message with a '%s' where the savestate is shown
+        :param is_load: if True, moves the clock to the savestate's time
+        """
         name = self._menu.get()
         save = saves.get(name)
         if save is None:
             return
         self.clock.un_pause('stop')
         choice = tkinter.messagebox.askokcancel(
-            title='Confirm load',
-            message=f'Load the following save?\n{save.name}\n{save.get_time_str()}')
+            title=title,
+            message=f'{msg}\n{save.name}\n{save.get_time_str()}')
         if choice:
-            self.clock.set_time(save.day, save.hour, save.minute)
+            if is_load:
+                self.clock.set_time(save.day, save.hour, save.minute)
             music.stop()
             saves.delete(name)
-            LOG.info('Loaded save "%s"', repr(save))
+            LOG.info(log_msg, repr(save))
         self.parent.tick()
         self._menu.delete(0, len(name))

@@ -54,6 +54,13 @@ def delete(name: str) -> None:
     _SAVES.pop(name, None)
 
 
+def clear() -> None:
+    """
+    Deletes all the current savestates
+    """
+    _SAVES.clear()
+
+
 def serialize() -> str:
     """
     Converts the saves to a comma-separated string, that can be later deserialised
