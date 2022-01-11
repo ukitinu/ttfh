@@ -7,7 +7,7 @@ __pycache__/
 /resources/sounds/*
 !/resources/sounds/.gitkeep
 
-/logs/
+logs/
 
 continue
 continue-backup
