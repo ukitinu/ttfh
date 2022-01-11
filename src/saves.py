@@ -1,27 +1,34 @@
 from __future__ import annotations
 
+import logging
 import re
 from typing import List, Optional, Dict
+
+LOG = logging.getLogger(__name__)
+
+NAME_RULES = "Rules:\n - length 1 to 16;\n - allowed characters: English alphabet letters, digits and whitespace"
 
 _SAVES: Dict[str, SaveState] = {}
 
 
-def create(name: str, day: int, hour: int, minute: int) -> None:
+def create(name: str, day: int, hour: int, minute: int) -> SaveState:
     """
     Creates a new SaveState with the given values, provided they are legal and the name is unique.
     :param name: save name
     :param day: save day
     :param hour: save hour
     :param minute: save minute
+    :return created savestate
     """
     if not SaveState.is_name_valid(name):
-        raise ValueError(f'"{name}" is invalid.\n{SaveState.NAME_RULES}')
+        raise ValueError(f'"{name}" is invalid.')
     if not SaveState.is_time_valid(day, hour, minute):
         raise ValueError(f'{day} {hour}:{minute} is invalid.')
     save = SaveState(name, day, hour, minute)
     if name in _SAVES:
         raise ValueError(f'"{name}" already in use')
     _SAVES[name] = save
+    return save
 
 
 def get_list() -> List[str]:
@@ -56,17 +63,26 @@ def serialize() -> str:
     return ','.join(save_list)
 
 
-def deserialize(string: str) -> None:
+def deserialize(string: str) -> List[str]:
     """
     Deserialise the given string, storing the values in memory.
     It expects a string of comma-separated repr(SaveState), for example the one returned by the serialize() method.
     :param string: string to deserialise
+    :return list of badly formatted savestates (empty if there are none)
     """
     values = string.split(',')
+    LOG.debug('Found %d potential savestates', len(values))
+    errors = []
     for value in values:
         if value:
-            save = SaveState.from_str(value)
-            _SAVES[save.name] = save
+            try:
+                save = SaveState.from_str(value)
+                _SAVES[save.name] = save
+                LOG.debug('Restored savestate %s', str(save))
+            except ValueError as e:
+                LOG.error('Invalid savestate string "%s"', value)
+                errors.append(value)
+    return errors
 
 
 class SaveState:
@@ -74,7 +90,6 @@ class SaveState:
     _NAME_PAT = "[a-zA-Z0-9 ]{1," + str(NAME_LEN) + "}"
     _TIME_PAT = "[1-3]\\.(?:[01][0-9]|2[0-3])\\.[0-5][0-9]"
     _PATTERN = "^" + _NAME_PAT + "@" + _TIME_PAT + "$"
-    NAME_RULES = "Rules:\n - length 1 to 16;\n - allowed characters: English alphabet letters, digits and whitespace"
 
     def __init__(self, name: str, day: int, hour: int, minute: int):
         self.name: str = name

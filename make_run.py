@@ -1,3 +1,7 @@
+"""
+Run this script to update the run file(s) with the updated values from ttfh.ini
+"""
+
 from os.path import exists
 
 from src import ini
@@ -19,7 +23,13 @@ _SH = MakeScriptData('PYTHON_CMD=', 'ENTRYPOINT=')
 _VBS = MakeScriptData('pythonCmd = ', 'entrypoint = ')
 
 
-def _make_script(file_key: str, file_data: Dict[str, str]) -> None:
+def _make_script(file_key: str, file_data: MakeScriptData) -> None:
+    """
+    Reads the specified file line by line and, when it finds one of the lines that may need an update, it changes it.
+    At the end, it overwrites the file.
+    :param file_key: name of the file to update
+    :param file_data: helper class with the values to update
+    """
     py_cmd = ini.sys('python3')
     entry = ini.sys('entrypoint')
 

@@ -1,12 +1,17 @@
 from __future__ import annotations
 
+import logging
 import sys
 import tkinter as tk
+import tkinter.messagebox
+from typing import List
 
 from src import ini, saves
 from src.graphics import mainpanels
 from src.graphics.interfaces import Panel
 from src.timer import Clock
+
+LOG = logging.getLogger(__name__)
 
 
 class Window:
@@ -19,20 +24,18 @@ class Window:
     _POS_X = int(ini.gui("pos-x"))
     _POS_Y = int(ini.gui("pos-y"))
 
-    def __init__(self, clock: Clock, save_string: str):
+    def __init__(self, clock: Clock):
         self.window = tk.Tk()
-        self.window.wm_protocol("WM_DELETE_WINDOW", self._on_delete)
-
         self.clock = clock
-        saves.deserialize(save_string)
-
         self.panel: Panel = mainpanels.create_main_panel(self.window, self.clock, self._WIDTH, self._HEIGHT)
 
     def _on_delete(self) -> None:
         """
         Creates the 'continue' file when the window is closed.
         """
+        LOG.info('Closing')
         self.window.destroy()
+        LOG.info('Saving')
         self._make_continue()
         sys.exit(0)
 
@@ -53,7 +56,7 @@ class Window:
     def _tick(self):
         self.panel.tick()
 
-    def draw(self) -> None:
+    def _draw(self, save_errors: List[str]) -> None:
         """
         Draws, displays and updates the main window of the programme.
         """
@@ -70,5 +73,17 @@ class Window:
                 self._tick()
             self.window.after(self.clock.get_interval(), trigger_change)
 
+        def show_save_errors():
+            if save_errors:
+                tkinter.messagebox.showinfo(
+                    title='Savestate errors',
+                    message='Unable to restore the following saves:\n - ' + '\n - '.join(save_errors))
+
         self.window.after(self.clock.get_interval(), trigger_change)
+        self.window.after(0, lambda: show_save_errors())
         self.window.mainloop()
+
+    def create(self, save_string: str):
+        self.window.wm_protocol("WM_DELETE_WINDOW", self._on_delete)
+        errors = saves.deserialize(save_string)
+        self._draw(errors)
