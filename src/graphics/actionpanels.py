@@ -116,8 +116,8 @@ class SavePanel(Panel):
             LOG.info('Saved "%s"', repr(save))
             self._save_input.delete(0, len(self._save_input.get()))
         except ValueError as e:
-            LOG.warning('Invalid save: "%s"', name)
-            tkinter.messagebox.showinfo(title='Save error', message=str(e))
+            LOG.warning('Invalid save "%s": %s', name, str(e))
+            tkinter.messagebox.showinfo(title='Save error', message=str(e) + f'\n{saves.NAME_RULES}')
 
     def _update_saves(self) -> None:
         """ Updates the list of savestates """
