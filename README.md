@@ -1,5 +1,7 @@
 # Till the Final Hour
 
+<img align="right" src="https://user-images.githubusercontent.com/52630493/149021546-af2f26f3-001c-4e42-b673-099292d1347e.png" height="400">
+
 Graphical clock to cycle over three days, made for a p&amp;p campaign loosely inspired by *TLOZ: Majora's Mask*.
 
 As in Majora's Mask, each day starts at 05:00.  
@@ -48,3 +50,4 @@ In this section you can define your own sound effects.
 ### Images
 
 In this section, you can put your own buttons' icons, I recommend keeping them 16x16 in size.
+
