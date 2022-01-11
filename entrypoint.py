@@ -20,8 +20,8 @@ def main(day: int, hour: int, minute: int, saves: str):
             LOG.info('Starting savestate string: %s', saves)
 
         timer = Clock(day, hour, minute)
-        window = Window(timer, saves)
-        window.draw()
+        window = Window(timer)
+        window.create(saves)
     else:
         LOG.error('Invalid parameters: day %d, hour %d, minute %d', day, hour, minute)
         sys.exit(1)

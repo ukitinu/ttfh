@@ -63,14 +63,16 @@ def serialize() -> str:
     return ','.join(save_list)
 
 
-def deserialize(string: str) -> None:
+def deserialize(string: str) -> List[str]:
     """
     Deserialise the given string, storing the values in memory.
     It expects a string of comma-separated repr(SaveState), for example the one returned by the serialize() method.
     :param string: string to deserialise
+    :return list of badly formatted savestates (empty if there are none)
     """
     values = string.split(',')
     LOG.debug('Found %d potential savestates', len(values))
+    errors = []
     for value in values:
         if value:
             try:
@@ -79,6 +81,8 @@ def deserialize(string: str) -> None:
                 LOG.debug('Restored savestate %s', str(save))
             except ValueError as e:
                 LOG.error('Invalid savestate string "%s"', value)
+                errors.append(value)
+    return errors
 
 
 class SaveState:
