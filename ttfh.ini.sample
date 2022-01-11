@@ -55,3 +55,4 @@ fwd=resources/images/forward.png
 bwd=resources/images/backward.png
 save=resources/images/save.png
 load=resources/images/load.png
+delete=resources/images/delete.png
