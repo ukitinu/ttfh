@@ -6,13 +6,14 @@ from typing import List, Optional, Dict
 _SAVES: Dict[str, SaveState] = {}
 
 
-def create(name: str, day: int, hour: int, minute: int) -> None:
+def create(name: str, day: int, hour: int, minute: int) -> SaveState:
     """
     Creates a new SaveState with the given values, provided they are legal and the name is unique.
     :param name: save name
     :param day: save day
     :param hour: save hour
     :param minute: save minute
+    :return created savestate
     """
     if not SaveState.is_name_valid(name):
         raise ValueError(f'"{name}" is invalid.\n{SaveState.NAME_RULES}')
@@ -22,6 +23,7 @@ def create(name: str, day: int, hour: int, minute: int) -> None:
     if name in _SAVES:
         raise ValueError(f'"{name}" already in use')
     _SAVES[name] = save
+    return save
 
 
 def get_list() -> List[str]:

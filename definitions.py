@@ -21,6 +21,6 @@ file_handler = logging.handlers.RotatingFileHandler(
     backupCount=10,
     encoding='UTF-8')
 
-file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)-24s - %(levelname)-8s - %(message)s'))
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)-28s - %(levelname)-8s - %(message)s'))
 
 logging.basicConfig(handlers=[file_handler], force=True, level=logging.INFO)

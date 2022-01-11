@@ -55,6 +55,12 @@ class Clock:
         self.end = False
         self.slow = 0
 
+    def get_time_str(self) -> str:
+        """
+        :return: returns a string with the current time, formatted as {day}.{hour:02}.{minute:02}.
+        """
+        return f'{self.day}.{self.hour:02}.{self.minute:02}'
+
     def update_time(self) -> None:
         """
         The method moves forward the timer, one minute at a time, and executes checks on the times.

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import logging
 import tkinter as tk
 from typing import Callable, List, Union, Optional
 
 from src.graphics.interfaces import Tickable
 from src.timer import Clock
+
+LOG = logging.getLogger(__name__)
 
 
 class ButtonAction:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import tkinter as tk
 import tkinter.messagebox
 from tkinter import ttk
@@ -12,6 +13,8 @@ from src.timer import Clock
 
 BTN_SIZE = 24
 SIDE_PAD = 16
+
+LOG = logging.getLogger(__name__)
 
 
 def create_nav_panel(root: tk.Tk, clock: Clock, parent: Panel, width: int, height: int) -> Panel:
@@ -124,10 +127,13 @@ class SavePanel(Panel):
         self.clock.un_pause('stop')
         self.parent.tick()
         name = self._save_input.get()
+        LOG.info('Trying to save with name "%s" at time %s', name, self.clock.get_time_str())
         try:
-            saves.create(name, self.clock.day, self.clock.hour, self.clock.minute)
+            save = saves.create(name, self.clock.day, self.clock.hour, self.clock.minute)
+            LOG.info('Saved "%s"', repr(save))
             self._save_input.delete(0, len(self._save_input.get()))
         except ValueError as e:
+            LOG.warning('Invalid save: "%s"', name)
             tkinter.messagebox.showinfo(title='Save error', message=str(e))
 
     def _update_saves(self) -> None:
@@ -148,5 +154,6 @@ class SavePanel(Panel):
             self.clock.set_time(save.day, save.hour, save.minute)
             music.stop()
             saves.delete(name)
+            LOG.info('Loaded save "%s"', repr(save))
         self.parent.tick()
         self._menu.delete(0, len(name))

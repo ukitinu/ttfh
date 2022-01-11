@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import sys
 import tkinter as tk
 
@@ -7,6 +8,8 @@ from src import ini, saves
 from src.graphics import mainpanels
 from src.graphics.interfaces import Panel
 from src.timer import Clock
+
+LOG = logging.getLogger(__name__)
 
 
 class Window:
@@ -32,7 +35,9 @@ class Window:
         """
         Creates the 'continue' file when the window is closed.
         """
+        LOG.info('Closing')
         self.window.destroy()
+        LOG.info('Saving')
         self._make_continue()
         sys.exit(0)
 

@@ -7,7 +7,7 @@ import sys
 from src.graphics.window import Window
 from src.timer import Clock
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 def main(day: int, hour: int, minute: int, saves: str):
@@ -15,10 +15,15 @@ def main(day: int, hour: int, minute: int, saves: str):
     If the parameters are valid, it starts the clock.
     """
     if 1 <= day <= 3 and 0 <= hour <= 23 and 0 <= minute <= 59:
+        LOG.info('Starting parameters: day %d, hour %d, minute %d', day, hour, minute)
+        if saves:
+            LOG.info('Starting savestate string: %s', saves)
+
         timer = Clock(day, hour, minute)
         window = Window(timer, saves)
         window.draw()
     else:
+        LOG.error('Invalid parameters: day %d, hour %d, minute %d', day, hour, minute)
         sys.exit(1)
 
 
